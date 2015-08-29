@@ -24,32 +24,32 @@ def add_builtins(library, vhdl_standard, mock_lang=False, mock_log=False):
         files = []
 
         if mock_lang:
-            files += [join("vhdl", "src", "lang", "lang_mock.vhd")]
-            files += [join("vhdl", "src", "lang", "lang_mock_types.vhd")]
-            files += [join("common", "test", "test_type_methods_api.vhd")]
+            files += [join("test", "common", "vhdl", "lang", "lang_mock.vhd")]
+            files += [join("test", "common", "vhdl", "lang", "lang_mock_types.vhd")]
+            files += [join("test", "common", "common", "test_type_methods_api.vhd")]
         else:
-            files += [join("vhdl", "src", "lang", "lang.vhd")]
+            files += [join("src", "common", "vhdl", "lang", "lang.vhd")]
 
-        files += [join("vhdl", "src", "lib", "std", "textio.vhd"),
-                  join("string_ops", "src", "string_ops.vhd"),
-                  join("check", "src", "check.vhd"),
-                  join("check", "src", "check_api.vhd"),
-                  join("check", "src", "check_base_api.vhd"),
-                  join("check", "src", "check_types.vhd"),
-                  join("run", "src", "stop_api.vhd"),
-                  join("run", "src", "run.vhd"),
-                  join("run", "src", "run_api.vhd"),
-                  join("run", "src", "run_types.vhd"),
-                  join("run", "src", "run_base_api.vhd")]
+        files += [join("src", "common", "vhdl", "lib", "std", "textio.vhd"),
+                  join("src", "common", "string_ops", "string_ops.vhd"),
+                  join("src", "common", "check", "check.vhd"),
+                  join("src", "common", "check", "check_api.vhd"),
+                  join("src", "common", "check", "check_base_api.vhd"),
+                  join("src", "common", "check", "check_types.vhd"),
+                  join("src", "common", "run", "stop_api.vhd"),
+                  join("src", "common", "run", "run.vhd"),
+                  join("src", "common", "run", "run_api.vhd"),
+                  join("src", "common", "run", "run_types.vhd"),
+                  join("src", "common", "run", "run_base_api.vhd")]
 
-        files += [join("logging", "src", "log_api.vhd"),
-                  join("logging", "src", "log_formatting.vhd"),
-                  join("logging", "src", "log.vhd"),
-                  join("logging", "src", "log_types.vhd")]
+        files += [join("src", "common", "logging", "log_api.vhd"),
+                  join("src", "common", "logging", "log_formatting.vhd"),
+                  join("src", "common", "logging", "log.vhd"),
+                  join("src", "common", "logging", "log_types.vhd")]
 
-        files += [join("dictionary", "src", "dictionary.vhd")]
+        files += [join("src", "common", "dictionary", "dictionary.vhd")]
 
-        files += [join("path", "src", "path.vhd")]
+        files += [join("src", "common", "path", "path.vhd")]
 
         return files
 
@@ -58,23 +58,23 @@ def add_builtins(library, vhdl_standard, mock_lang=False, mock_log=False):
         files = []
 
         if mock_lang:
-            files += [join("common", "test", "test_type_methods93.vhd")]
-            files += [join("common", "test", "test_types93.vhd")]
-            files += [join("vhdl", "src", "lang", "lang_mock_special_types93.vhd")]
+            files += [join("test", "93", "common", "test_type_methods.vhd")]
+            files += [join("test", "93", "common", "test_types.vhd")]
+            files += [join("test", "93", "vhdl", "lang", "lang_mock_special_types.vhd")]
 
         if mock_log:
-            files += [join("logging", "src", "log_base93_mock.vhd"),
-                      join("logging", "src", "log_special_types93.vhd"),
-                      join("logging", "src", "log_base_api_mock.vhd")]
+            files += [join("test", "93", "logging", "log_base_mock.vhd"),
+                      join("src", "93", "logging", "log_special_types.vhd"),
+                      join("test", "common", "logging", "log_base_api_mock.vhd")]
         else:
-            files += [join("logging", "src", "log_base93.vhd"),
-                      join("logging", "src", "log_special_types93.vhd"),
-                      join("logging", "src", "log_base_api.vhd")]
+            files += [join("src", "93", "logging", "log_base.vhd"),
+                      join("src", "93", "logging", "log_special_types.vhd"),
+                      join("src", "common", "logging", "log_base_api.vhd")]
 
-        files += [join("check", "src", "check_base93.vhd"),
-                  join("check", "src", "check_special_types93.vhd"),
-                  join("run", "src", "run_base93.vhd"),
-                  join("run", "src", "run_special_types93.vhd")]
+        files += [join("src", "93", "check", "check_base.vhd"),
+                  join("src", "93", "check", "check_special_types.vhd"),
+                  join("src", "93", "run", "run_base.vhd"),
+                  join("src", "93", "run", "run_special_types.vhd")]
 
         return files
 
@@ -83,26 +83,26 @@ def add_builtins(library, vhdl_standard, mock_lang=False, mock_log=False):
         files = []
 
         if mock_lang:
-            files += [join("common", "test", "test_type_methods200x.vhd")]
-            files += [join("common", "test", "test_types200x.vhd")]
-            files += [join("vhdl", "src", "lang", "lang_mock_special_types200x.vhd")]
+            files += [join("test", "200x", "common", "test_type_methods.vhd")]
+            files += [join("test", "200x", "common", "test_types.vhd")]
+            files += [join("test", "200x", "vhdl", "lang", "lang_mock_special_types.vhd")]
 
         if mock_log:
-            files += [join("common", "test", "test_type_methods_api.vhd")]
-            files += [join("common", "test", "test_type_methods200x.vhd")]
-            files += [join("common", "test", "test_types200x.vhd")]
-            files += [join("logging", "src", "log_base.vhd"),
-                      join("logging", "src", "log_special_types200x_mock.vhd"),
-                      join("logging", "src", "log_base_api.vhd")]
+            files += [join("test", "common", "common", "test_type_methods_api.vhd")]
+            files += [join("test", "200x", "common", "test_type_methods.vhd")]
+            files += [join("test", "200x", "common", "test_types.vhd")]
+            files += [join("src", "200x", "logging", "log_base.vhd"),
+                      join("test", "200x", "logging", "log_special_types_mock.vhd"),
+                      join("src", "common", "logging", "log_base_api.vhd")]
         else:
-            files += [join("logging", "src", "log_base.vhd"),
-                      join("logging", "src", "log_special_types200x.vhd"),
-                      join("logging", "src", "log_base_api.vhd")]
+            files += [join("src", "200x", "logging", "log_base.vhd"),
+                      join("src", "200x", "logging", "log_special_types.vhd"),
+                      join("src", "common", "logging", "log_base_api.vhd")]
 
-        files += [join("check", "src", "check_base.vhd"),
-                  join("check", "src", "check_special_types200x.vhd"),
-                  join("run", "src", "run_base.vhd"),
-                  join("run", "src", "run_special_types200x.vhd")]
+        files += [join("src", "200x", "check", "check_base.vhd"),
+                  join("src", "200x", "check", "check_special_types.vhd"),
+                  join("src", "200x", "run", "run_base.vhd"),
+                  join("src", "200x", "run", "run_special_types.vhd")]
 
         return files
 
@@ -110,8 +110,8 @@ def add_builtins(library, vhdl_standard, mock_lang=False, mock_log=False):
         """Return built-in VHDL files present only in 2008"""
         files = []
 
-        files += ["vunit_context.vhd"]
-        files += [join("run", "src", "stop_body_2008.vhd")]
+        files += [join("src", "2008", "vunit_context.vhd")]
+        files += [join("src", "2008", "run", "stop.vhd")]
 
         return files
 
@@ -119,7 +119,7 @@ def add_builtins(library, vhdl_standard, mock_lang=False, mock_log=False):
         """Return built-in VHDL files present both in VHDL 93 and 2002"""
         files = []
 
-        files += [join("run", "src", "stop_body_dummy.vhd")]
+        files += [join("src", "93_2002", "run", "stop.vhd")]
 
         return files
 
@@ -146,14 +146,14 @@ def add_array_util(library, vhdl_standard):
     if vhdl_standard != '2008':
         raise RuntimeError("Array utility only supports vhdl 2008")
 
-    library.add_source_files(join(VHDL_PATH, "array", "src", "array_pkg.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "array", "array_pkg.vhd"))
 
 
 def add_osvvm(library):
     """
     Add osvvm library
     """
-    for file_name in glob(join(VHDL_PATH, "osvvm", "*.vhd")):
+    for file_name in glob(join(VHDL_PATH, "src", "2008", "osvvm", "*.vhd")):
         if basename(file_name) != 'AlertLogPkg_body_BVUL.vhd':
             library.add_source_files(file_name, preprocessors=[])
 
@@ -165,16 +165,16 @@ def add_com(library, vhdl_standard, use_debug_codecs=False):
     if vhdl_standard != '2008':
         raise RuntimeError("Communication package only supports vhdl 2008")
 
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_api.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_types.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_codec_api.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_context.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_string.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_debug_codec_builder.vhd"))
-    library.add_source_files(join(VHDL_PATH, "com", "src", "com_std_codec_builder.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_api.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_types.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_codec_api.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_context.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_string.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_debug_codec_builder.vhd"))
+    library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_std_codec_builder.vhd"))
 
     if use_debug_codecs:
-        library.add_source_files(join(VHDL_PATH, "com", "src", "com_codec_debug.vhd"))
+        library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_codec_debug.vhd"))
     else:
-        library.add_source_files(join(VHDL_PATH, "com", "src", "com_codec.vhd"))
+        library.add_source_files(join(VHDL_PATH, "src", "2008", "com", "com_codec.vhd"))

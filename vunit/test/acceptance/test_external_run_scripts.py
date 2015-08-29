@@ -76,91 +76,91 @@ class TestExternalRunScripts(unittest.TestCase):
         self.check(join(ROOT, "examples", "vhdl", "com", "run.py"))
 
     def test_array_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "array", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "2008", "array", "run.py"))
 
     def test_check_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "check", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "check", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_check_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "check", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "check", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_check_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "check", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "check", "run.py"),
                    vhdl_standard='93')
 
     def test_logging_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "logging", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "logging", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_logging_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "logging", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "logging", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_logging_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "logging", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "logging", "run.py"),
                    vhdl_standard='93')
 
     def test_run_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "run", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "run", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_run_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "run", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "run", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_run_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "run", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "run", "run.py"),
                    vhdl_standard='93')
 
     def test_string_ops_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "string_ops", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "string_ops", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_string_ops_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "string_ops", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "string_ops", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_string_ops_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "string_ops", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "string_ops", "run.py"),
                    vhdl_standard='93')
 
     def test_dictionary_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "dictionary", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "dictionary", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_dictionary_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "dictionary", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "dictionary", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_dictionary_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "dictionary", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "dictionary", "run.py"),
                    vhdl_standard='93')
 
     def test_path_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "path", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "common", "path", "run.py"))
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_path_vhdl_2002(self):
-        self.check(join(ROOT, "vhdl", "path", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "path", "run.py"),
                    vhdl_standard='2002')
 
     @unittest.skipIf(simulator_is("ghdl"), "GHDL only supports 2008")
     def test_path_vhdl_93(self):
-        self.check(join(ROOT, "vhdl", "path", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "common", "path", "run.py"),
                    vhdl_standard='93')
 
     def test_com_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "com", "run.py"))
+        self.check(join(ROOT, "vhdl", "test", "2008", "com", "run.py"))
 
     def test_com_debug_vhdl_2008(self):
-        self.check(join(ROOT, "vhdl", "com", "run.py"),
+        self.check(join(ROOT, "vhdl", "test", "2008", "com", "run.py"),
                    args=["--use-debug-codecs"])
 
     def test_vhdl_compile_order_project(self):

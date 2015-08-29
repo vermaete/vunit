@@ -34,7 +34,7 @@ class TestLicense(unittest.TestCase):
                     continue
                 if 'codecs' in root:
                     continue
-                osvvm_directory = abspath(join(ROOT, 'vhdl', 'osvvm'))
+                osvvm_directory = abspath(join(ROOT, 'vhdl', 'src', '2008', 'osvvm'))
                 if is_prefix_of(osvvm_directory, abspath(join(root, file_name))):
                     continue
                 osvvm_integration_example_directory = abspath(

@@ -202,10 +202,10 @@ There are many examples demonstrating more specific usage of VUnit listed below:
   In addition to the normal [run.py](examples/vhdl/uart/run.py) it also contains a [run_with_preprocessing.py](examples/vhdl/uart/run_with_preprocessing.py) to demonstrate the benefit of    location and check preprocessing.
 
 * [examples/vhdl/check/](examples/vhdl/check/)
-  * Demonstrates VUnit check subprograms. 
+  * Demonstrates VUnit check subprograms.
 
 * [examples/vhdl/array/](examples/vhdl/array/)
-  * Demonstrates the `array_t` data type of [array_pkg](vhdl/array/src/array_pkg.vhd) which can be used to handle dynamically sized 1D, 2D and 3D data as well as storing and loading it from csv and raw files.
+  * Demonstrates the `array_t` data type of [array_pkg](vhdl/src/2008/array/array_pkg.vhd) which can be used to handle dynamically sized 1D, 2D and 3D data as well as storing and loading it from csv and raw files.
 
 * [generate_tests](examples/vhdl/generate_tests)
   * Demonstrates generating multiple test runs of the same test bench with different generic values.
@@ -217,8 +217,8 @@ There are many examples demonstrating more specific usage of VUnit listed below:
   * Demonstrates the `com` message passing package which can be used to communicate arbitrary objects between processes. Further reading can be found in the [com user guide](vhdl/com/user_guide.md)
 
 * [examples/vhdl/logging/](examples/vhdl/logging/)
-  * Demonstrates VUnit's support for logging.  
-  
+  * Demonstrates VUnit's support for logging.
+
 
 ## Selecting simulator backend
 VUnit automatically detects which simulators are available on the `PATH` environment variable and by default selects the first one found. For people who have multiple simulators installed the `VUNIT_SIMULATOR` environment variable can be set to either `modelsim` or `ghdl` to explicitly choose the simulator backend.
@@ -295,10 +295,10 @@ VUnit will catch Ctrl-C and perform a clean shutdown closing all started simulat
 ## Installing VUnit
 To be able to import VUnit in your `run.py` script you need to make it visible to Python or else the following error occurs:
 ```console
-Traceback (most recent call last): 
-   File "run.py", line 2, in <module> 
-     from vunit import VUnit 
-ImportError: No module named vunit 
+Traceback (most recent call last):
+   File "run.py", line 2, in <module>
+     from vunit import VUnit
+ImportError: No module named vunit
 ```
 
 There are three methods to make VUnit importable in your `run.py` script:
@@ -306,4 +306,4 @@ There are three methods to make VUnit importable in your `run.py` script:
 1. Install it in your Python environment using `python setup.py install`
 2. Set the `PYTHONPATH` environment variable to include the path to the VUnit root directory containing this user guide. Note that you shouldn't point to the vunit directory within the root directory.
 
-3. Add a `import sys; sys.path.append("/path/to/vunit_root/")` statement in your `run.py` file **before** the `import vunit` statement.  
+3. Add a `import sys; sys.path.append("/path/to/vunit_root/")` statement in your `run.py` file **before** the `import vunit` statement.
