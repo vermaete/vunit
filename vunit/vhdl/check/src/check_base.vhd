@@ -25,8 +25,7 @@ package body check_base_pkg is
     constant file_format    : in    log_format_t  := off;
     constant stop_level : in log_level_t := failure;
     constant separator            : in    character   := ',';
-    constant append               : in    boolean     := false;
-    constant ack_on_pass : in boolean := false) is
+    constant append               : in    boolean     := false) is
   begin
     -- pragma translate_off
     checker.init(default_level,
@@ -36,23 +35,22 @@ package body check_base_pkg is
                 file_format,
                 stop_level,
                 separator,
-                append,
-                ack_on_pass);
+                append);
     -- pragma translate_on
   end base_init;
 
-  procedure base_enable_pass_acknowledge (
+  procedure base_enable_pass_msg (
     variable checker : inout checker_t;
     constant handler : in log_handler_t) is
   begin
-    checker.enable_pass_acknowledge(handler);
+    checker.enable_pass_msg(handler);
   end;
 
-  procedure base_disable_pass_acknowledge (
+  procedure base_disable_pass_msg (
     variable checker : inout checker_t;
     constant handler : in log_handler_t) is
   begin
-    checker.disable_pass_acknowledge(handler);
+    checker.disable_pass_msg(handler);
   end;
 
   procedure base_check(
@@ -65,6 +63,30 @@ package body check_base_pkg is
   begin
     -- pragma translate_off
     checker.check(expr, msg, level, line_num, file_name);
+    -- pragma translate_on
+  end;
+
+  procedure base_check_no_pass_msg(
+    variable checker       : inout checker_t;
+    constant expr         : in    boolean;
+    constant msg          : in    string := "Check failed!";
+    constant level        : in    log_level_t := dflt;
+    constant line_num : in natural := 0;
+    constant file_name : in string := "") is
+  begin
+    -- pragma translate_off
+    checker.check_no_pass_msg(expr, msg, level, line_num, file_name);
+    -- pragma translate_on
+  end;
+
+  procedure base_log_pass_msg(
+    variable checker   : inout checker_t;
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
+  begin
+    -- pragma translate_off
+    checker.log_pass_msg(msg, line_num, file_name);
     -- pragma translate_on
   end;
 

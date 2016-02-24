@@ -25,14 +25,13 @@ package check_base_pkg is
     constant file_format    : in    log_format_t  := off;
     constant stop_level : in log_level_t := failure;
     constant separator            : in    character   := ',';
-    constant append               : in    boolean     := false;
-    constant ack_on_pass : in boolean := false);
+    constant append               : in    boolean     := false);
 
-  procedure base_enable_pass_acknowledge (
+  procedure base_enable_pass_msg (
     variable checker : inout checker_t;
     constant handler : in log_handler_t);
 
-  procedure base_disable_pass_acknowledge (
+  procedure base_disable_pass_msg (
     variable checker : inout checker_t;
     constant handler : in log_handler_t);
 
@@ -43,6 +42,20 @@ package check_base_pkg is
     constant level        : in    log_level_t := dflt;
     constant line_num : in natural := 0;
     constant file_name : in string := "");
+
+  procedure base_check_no_pass_msg(
+    variable checker       : inout checker_t;
+    constant expr         : in    boolean;
+    constant msg          : in    string := "Check failed!";
+    constant level        : in    log_level_t := dflt;
+    constant line_num : in natural := 0;
+    constant file_name : in string := "");
+
+  procedure base_log_pass_msg(
+    variable checker   : inout checker_t;
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "");
 
   procedure base_get_checker_stat (
     variable checker : inout checker_t;

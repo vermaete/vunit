@@ -24,13 +24,12 @@ package check_special_types_pkg is
       constant default_file_mode    : in log_format_t  := off;
       constant stop_level : in log_level_t := failure;
       constant separator            : in character   := ',';
-      constant append               : in boolean     := false;
-      constant ack_on_pass : in boolean := false);
+      constant append               : in boolean     := false);
 
-    procedure enable_pass_acknowledge (
+    procedure enable_pass_msg (
       constant handler : in log_handler_t);
 
-    procedure disable_pass_acknowledge (
+    procedure disable_pass_msg (
       constant handler : in log_handler_t);
 
     procedure check(expr         :    boolean;
@@ -38,6 +37,17 @@ package check_special_types_pkg is
                     level        :    log_level_t := dflt;
                     line_num     : in natural     := 0;
                     file_name    : in string      := "");
+
+    procedure check_no_pass_msg(expr         :    boolean;
+                    msg          :    string;
+                    level        :    log_level_t := dflt;
+                    line_num     : in natural     := 0;
+                    file_name    : in string      := "");
+
+    procedure log_pass_msg(
+      constant msg       : in    string      := "Check.";
+      constant line_num  : in    natural     := 0;
+      constant file_name : in    string      := "");
 
     impure function get_stat
       return checker_stat_t;
@@ -62,9 +72,10 @@ package body check_special_types_pkg is
     variable default_log_level : log_level_t := error;
     variable stat   : checker_stat_t := (0, 0, 0);
     variable logger : logger_t;
-    variable ack_on_passing_check : boolean := false;
     variable pass_display_filter : log_filter_t;
+    variable pass_display_filter_active : boolean := true;
     variable pass_file_filter : log_filter_t;
+    variable pass_file_filter_active : boolean := true;
 
     procedure init (
       constant default_level        : in log_level_t := error;
@@ -74,38 +85,37 @@ package body check_special_types_pkg is
       constant default_file_mode    : in log_format_t  := off;
       constant stop_level : in log_level_t := failure;
       constant separator            : in character   := ',';
-      constant append               : in boolean     := false;
-      constant ack_on_pass : in boolean := false) is
+      constant append               : in boolean     := false) is
     begin
       default_log_level := default_level;
       logger.init(default_src, file_name, default_display_mode, default_file_mode, stop_level, separator, append);
-      ack_on_passing_check := ack_on_pass;
       logger.rename_level(debug_low2, "pass");
       logger.remove_filter(pass_display_filter);
-      logger.add_filter(pass_display_filter, (1 => pass_level), "", false, (1 => display_handler));
       logger.remove_filter(pass_file_filter);
+      logger.add_filter(pass_display_filter, (1 => pass_level), "", false, (1 => display_handler));
       logger.add_filter(pass_file_filter, (1 => pass_level), "", false, (1 => file_handler));
     end init;
 
-    procedure enable_pass_acknowledge (
+    procedure enable_pass_msg (
       constant handler : in log_handler_t) is
     begin
-      ack_on_passing_check := true;
-      if handler = display_handler then
+      if (handler = display_handler) and pass_display_filter_active then
+        pass_display_filter_active := false;
         logger.remove_filter(pass_display_filter);
-      else
+      elsif (handler = file_handler) and pass_file_filter_active then
+        pass_file_filter_active := false;
         logger.remove_filter(pass_file_filter);
       end if;
     end;
 
-    procedure disable_pass_acknowledge (
+    procedure disable_pass_msg (
       constant handler : in log_handler_t) is
     begin
-      if handler = display_handler then
-        logger.remove_filter(pass_display_filter);
+      if (handler = display_handler) and not pass_display_filter_active then
+        pass_display_filter_active := true;
         logger.add_filter(pass_display_filter, (1 => pass_level), "", false, (1 => display_handler));
-      else
-        logger.remove_filter(pass_file_filter);
+      elsif (handler = file_handler) and not pass_file_filter_active then
+        pass_file_filter_active := true;
         logger.add_filter(pass_file_filter, (1 => pass_level), "", false, (1 => file_handler));
       end if;
     end;
@@ -125,10 +135,39 @@ package body check_special_types_pkg is
           logger.log(msg, level, "", line_num, file_name);
         end if;
       else
-        if ack_on_passing_check then
+        if not (pass_display_filter_active and pass_file_filter_active) then
           logger.log(msg, pass_level, "", line_num, file_name);
         end if;
         stat.n_passed := stat.n_passed + 1;
+      end if;
+    end;
+
+    procedure check_no_pass_msg(expr         :    boolean;
+                    msg          :    string;
+                    level        :    log_level_t := dflt;
+                    line_num     : in natural     := 0;
+                    file_name    : in string      := "") is
+    begin
+      stat.n_checks := stat.n_checks + 1;
+      if (expr = false) then
+        stat.n_failed := stat.n_failed + 1;
+        if level = dflt then
+          logger.log(msg, default_log_level, "", line_num, file_name);
+        else
+          logger.log(msg, level, "", line_num, file_name);
+        end if;
+      else
+        stat.n_passed := stat.n_passed + 1;
+      end if;
+    end;
+
+    procedure log_pass_msg(
+      constant msg       : in    string      := "Check.";
+      constant line_num  : in    natural     := 0;
+      constant file_name : in    string      := "") is
+    begin
+      if not (pass_display_filter_active and pass_file_filter_active) then
+        logger.log(msg, pass_level, "", line_num, file_name);
       end if;
     end;
 

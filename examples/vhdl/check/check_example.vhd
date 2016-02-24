@@ -192,7 +192,7 @@ begin
     ---------------------------------------------------------------------------
 
     info("To support debugging you can get a positive acknowledge on a passing check.");
-    enable_pass_acknowledge;
+    enable_pass_msg;
 
     info("The message returned is the message provided to the check but the log level will be PASS.");
     check(some_false_condition, "Checking some condition.");
@@ -245,7 +245,7 @@ begin
 
     info("Typically you would only have this debug info on file. Acknowledge is off by default.");
     checker_init(file_format => verbose, file_name => "debug.txt");
-    enable_pass_acknowledge(file_handler);
+    enable_pass_msg(file_handler);
     check(some_false_condition, "Checking some condition.");
     check(some_true_condition, "Checking some condition.");
     info("The PASS message is not shown on stdout");
