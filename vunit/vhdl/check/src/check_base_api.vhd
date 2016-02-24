@@ -25,7 +25,16 @@ package check_base_pkg is
     constant file_format    : in    log_format_t  := off;
     constant stop_level : in log_level_t := failure;
     constant separator            : in    character   := ',';
-    constant append               : in    boolean     := false);
+    constant append               : in    boolean     := false;
+    constant ack_on_pass : in boolean := false);
+
+  procedure base_enable_pass_acknowledge (
+    variable checker : inout checker_t;
+    constant handler : in log_handler_t);
+
+  procedure base_disable_pass_acknowledge (
+    variable checker : inout checker_t;
+    constant handler : in log_handler_t);
 
   procedure base_check(
     variable checker       : inout checker_t;

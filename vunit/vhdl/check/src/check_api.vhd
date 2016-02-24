@@ -22,7 +22,7 @@ package check_pkg is
   shared variable default_checker : checker_t;
   signal check_enabled : std_logic := '1';
 
-  alias checker_init is base_init[checker_t, log_level_t, string, string, log_format_t, log_format_t, log_level_t, character, boolean];
+  alias checker_init is base_init[checker_t, log_level_t, string, string, log_format_t, log_format_t, log_level_t, character, boolean, boolean];
 
   procedure checker_init (
     constant default_level  : in log_level_t  := error;
@@ -32,7 +32,18 @@ package check_pkg is
     constant file_format    : in log_format_t := off;
     constant stop_level : in log_level_t := failure;
     constant separator      : in character    := ',';
-    constant append         : in boolean      := false);
+    constant append         : in boolean      := false;
+    constant ack_on_pass : in boolean := false);
+
+  procedure enable_pass_acknowledge;
+
+  procedure enable_pass_acknowledge (
+    constant handler : in log_handler_t);
+
+  procedure disable_pass_acknowledge;
+
+  procedure disable_pass_acknowledge (
+    constant handler : in log_handler_t);
 
   procedure checker_init (
     variable checker       : inout checker_t;
@@ -128,9 +139,15 @@ package check_pkg is
   -- check_passed
   -----------------------------------------------------------------------------
   procedure check_passed(
-    variable checker   : inout checker_t);
+    variable checker   : inout checker_t;
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "");
 
-  procedure check_passed;
+  procedure check_passed(
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "");
 
   -----------------------------------------------------------------------------
   -- check_failed

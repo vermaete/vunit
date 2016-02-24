@@ -20,6 +20,9 @@ architecture test of check_example is
   signal status_ok : std_logic;
   signal clk : std_logic := '0';
   signal check_en : std_logic := '0';
+  signal start_event, end_event : std_logic := '0';
+  signal en : std_logic := '1';
+  signal stability_signal : std_logic;
   shared variable counter : shared_natural;
 begin
   example_process: process is
@@ -106,6 +109,7 @@ begin
     variable my_checker : checker_t;
     variable pass, found_errors : boolean;
     variable cnt : integer;
+    variable enable : std_logic;
 
     constant messages : messages_t := ("failed", "FAILED");
     constant use_upper_case : boolean := true;
@@ -187,6 +191,67 @@ begin
 
     ---------------------------------------------------------------------------
 
+    info("To support debugging you can get a positive acknowledge on a passing check.");
+    enable_pass_acknowledge;
+
+    info("The message returned is the message provided to the check but the log level will be PASS.");
+    check(some_false_condition, "Checking some condition.");
+    check(some_true_condition, "Checking some condition.");
+
+    info("Some checks like check_stable can fail with the given message (""Checking stability."" in this case)");
+
+    -- Making the concurrent stability check fail in the "normal" way
+    wait until rising_edge(clk);
+    stability_signal <= '1';
+    start_event <= '1';
+    wait until rising_edge(clk);
+    stability_signal <= '0';
+    start_event <= '0';
+    end_event <= '1';
+    wait until rising_edge(clk);
+    end_event <= '0';
+
+    info("but also with messages not provided by the user. This is because there are several internal checks, not only one for checking the stability.");
+
+    -- Making the stability check fail due to unknown values
+    wait until rising_edge(clk);
+    stability_signal <= 'X';
+    start_event <= '1';
+    end_event <= 'X';
+    wait until rising_edge(clk);
+    stability_signal <= '0';
+    start_event <= '0';
+    end_event <= '0';
+
+    info("However, there is only one pass message for every top-level check called by the user. The provided message is used for that.");
+
+    -- A successful stability check
+    wait until rising_edge(clk);
+    stability_signal <= '1';
+    start_event <= '1';
+    end_event <= '1';
+    wait until rising_edge(clk);
+    stability_signal <= '0';
+    start_event <= '0';
+    end_event <= '0';
+
+    info("There are also checks that return error messages which are a combination of the provided messages and internally generated messages.");
+    enable := '0';
+    check_equal(enable, '1', "Checking that condition is true.");
+
+    info("Still, when they pass only the provided message is given.");
+    enable := '1';
+    check_equal(enable, '1', "Checking that condition is true.");
+
+    info("Typically you would only have this debug info on file. Acknowledge is off by default.");
+    checker_init(file_format => verbose, file_name => "debug.txt");
+    enable_pass_acknowledge(file_handler);
+    check(some_false_condition, "Checking some condition.");
+    check(some_true_condition, "Checking some condition.");
+    info("The PASS message is not shown on stdout");
+
+    ---------------------------------------------------------------------------
+
     info("Uptil now we've only used the basic sequential check call. There is a more generic check_true call that can be called concurrently as well. The concurrent call takes a std_logic condition ('1' = true) and checks that on every enabled clock_edge (either rising, falling, or both)");
     wait until rising_edge(clk);
     check_en <= '1';
@@ -262,4 +327,5 @@ begin
   clk <= not clk after 5 ns;
 
   status_check: check_true(clk, check_en, status_ok, "Concurrent status check failed.");
+  stability_check : check_stable(clk, en, start_event, end_event, stability_signal, "Checking stability.");
 end architecture test;

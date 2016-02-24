@@ -53,7 +53,8 @@ package body check_pkg is
     constant file_format    : in log_format_t := off;
     constant stop_level : in log_level_t := failure;
     constant separator      : in character    := ',';
-    constant append         : in boolean      := false) is
+    constant append         : in boolean      := false;
+    constant ack_on_pass : in boolean := false) is
   begin
     -- pragma translate_off
     base_init(default_checker,
@@ -64,9 +65,34 @@ package body check_pkg is
          file_format,
          stop_level,
          separator,
-         append);
+         append,
+         ack_on_pass);
     -- pragma translate_on
   end checker_init;
+
+  procedure enable_pass_acknowledge is
+  begin
+    enable_pass_acknowledge(display_handler);
+    enable_pass_acknowledge(file_handler);
+  end;
+
+  procedure enable_pass_acknowledge (
+    constant handler : in log_handler_t) is
+  begin
+    base_enable_pass_acknowledge(default_checker, handler);
+  end;
+
+  procedure disable_pass_acknowledge is
+  begin
+    enable_pass_acknowledge(display_handler);
+    enable_pass_acknowledge(file_handler);
+  end;
+
+  procedure disable_pass_acknowledge (
+    constant handler : in log_handler_t) is
+  begin
+    base_disable_pass_acknowledge(default_checker, handler);
+  end;
 
   procedure checker_init (
     variable checker       : inout checker_t;
@@ -291,17 +317,23 @@ package body check_pkg is
   -- check_passed
   -----------------------------------------------------------------------------
   procedure check_passed(
-    variable checker   : inout checker_t) is
+    variable checker   : inout checker_t;
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
-    check(checker, true);
+    check(checker, true, msg, dflt, line_num, file_name);
     -- pragma translate_on
   end;
 
-  procedure check_passed is
+  procedure check_passed(
+    constant msg       : in    string      := "Check.";
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
-    check(true);
+    check(true, msg, dflt, line_num, file_name);
     -- pragma translate_on
   end;
 
@@ -666,21 +698,33 @@ package body check_pkg is
     constant line_num   : in    natural          := 0;
     constant file_name  : in    string           := "") is
     variable ref : std_logic_vector(expr'range);
+    variable pass : boolean := true;
   begin
     -- pragma translate_off
     wait on clock until start_condition(clock, active_clock_edge, start_event, en);
     if to_x01(start_event) = 'X' then
-      check(checker, false, "Unknown start event.", level, line_num, file_name);
+      check_failed(checker, "Unknown start event.", level, line_num, file_name);
       return;
     end if;
     ref := to_x01(expr);
-    check(checker, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
+    if is_x(expr) then
+      check(checker, pass, false, "Unknown data in window.", level, line_num, file_name);
+    end if;
     while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
       wait_on_edge(clock, en, active_clock_edge);
-      check(checker, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-      check(checker, ref = to_x01(expr), msg, level, line_num, file_name);
+      if is_x(expr) then
+        check(checker, pass, false, "Unknown data in window.", level, line_num, file_name);
+      end if;
+      if ref /= to_x01(expr) then
+        check(checker, pass, false, msg, level, line_num, file_name);
+      end if;
     end loop;
-    check(checker, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
+    if to_x01(end_event) = 'X' then
+      check(checker, pass, false, "Unknown end event.", level, line_num, file_name);
+    end if;
+    if pass then
+      check(checker, true, msg, level, line_num, file_name);
+    end if;
     -- pragma translate_on
   end;
 
@@ -714,21 +758,33 @@ package body check_pkg is
     constant line_num   : in    natural          := 0;
     constant file_name  : in    string           := "") is
     variable ref : std_logic;
+    variable pass : boolean := true;
   begin
     -- pragma translate_off
     wait on clock until start_condition(clock, active_clock_edge, start_event, en);
     if to_x01(start_event) = 'X' then
-      check(checker, false, "Unknown start event.", level, line_num, file_name);
+      check_failed(checker, "Unknown start event.", level, line_num, file_name);
       return;
     end if;
     ref := to_x01(expr);
-    check(checker, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
+    if is_x(expr) then
+      check(checker, pass, false, "Unknown data in window.", level, line_num, file_name);
+    end if;
     while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
       wait_on_edge(clock, en, active_clock_edge);
-      check(checker, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-      check(checker, ref = to_x01(expr), msg, level, line_num, file_name);
+      if is_x(expr) then
+        check(checker, pass, false, "Unknown data in window.", level, line_num, file_name);
+      end if;
+      if ref /= to_x01(expr) then
+        check(checker, pass, false, msg, level, line_num, file_name);
+      end if;
     end loop;
-    check(checker, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
+    if to_x01(end_event) = 'X' then
+      check(checker, pass, false, "Unknown end event.", level, line_num, file_name);
+    end if;
+    if pass then
+      check(checker, true, msg, level, line_num, file_name);
+    end if;
     -- pragma translate_on
   end;
 
@@ -2619,7 +2675,7 @@ package body check_pkg is
     -- pragma translate_off
     if got = expected then
       pass := true;
-      check_passed(checker);
+      check_passed(checker, msg, line_num, file_name);
     else
       pass := false;
       check_failed(checker,

@@ -25,7 +25,8 @@ package body check_base_pkg is
     constant file_format    : in    log_format_t  := off;
     constant stop_level : in log_level_t := failure;
     constant separator            : in    character   := ',';
-    constant append               : in    boolean     := false) is
+    constant append               : in    boolean     := false;
+    constant ack_on_pass : in boolean := false) is
   begin
     -- pragma translate_off
     checker.init(default_level,
@@ -35,9 +36,24 @@ package body check_base_pkg is
                 file_format,
                 stop_level,
                 separator,
-                append);
+                append,
+                ack_on_pass);
     -- pragma translate_on
   end base_init;
+
+  procedure base_enable_pass_acknowledge (
+    variable checker : inout checker_t;
+    constant handler : in log_handler_t) is
+  begin
+    checker.enable_pass_acknowledge(handler);
+  end;
+
+  procedure base_disable_pass_acknowledge (
+    variable checker : inout checker_t;
+    constant handler : in log_handler_t) is
+  begin
+    checker.disable_pass_acknowledge(handler);
+  end;
 
   procedure base_check(
     variable checker       : inout checker_t;
