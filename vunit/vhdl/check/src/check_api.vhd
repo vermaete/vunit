@@ -34,16 +34,6 @@ package check_pkg is
     constant separator      : in character    := ',';
     constant append         : in boolean      := false);
 
-  procedure enable_pass_msg;
-
-  procedure enable_pass_msg (
-    constant handler : in log_handler_t);
-
-  procedure disable_pass_msg;
-
-  procedure disable_pass_msg (
-    constant handler : in log_handler_t);
-
   procedure checker_init (
     variable checker       : inout checker_t;
     constant default_level : in    log_level_t := error;
@@ -54,6 +44,26 @@ package check_pkg is
     variable logger        : inout logger_t);
 
   alias check is base_check[checker_t, boolean, string, log_level_t, natural, string];
+
+  procedure enable_pass_msg;
+
+  procedure enable_pass_msg (
+    constant handler : in log_handler_t);
+
+  procedure disable_pass_msg;
+
+  procedure disable_pass_msg (
+    constant handler : in log_handler_t);
+
+  procedure enable_pass_msg (
+    variable checker       : inout checker_t);
+
+  alias enable_pass_msg is base_enable_pass_msg[checker_t, log_handler_t];
+
+  procedure disable_pass_msg (
+    variable checker       : inout checker_t);
+
+  alias disable_pass_msg is base_disable_pass_msg[checker_t, log_handler_t];
 
   procedure check(
     variable checker   : inout checker_t;

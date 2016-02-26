@@ -18,6 +18,11 @@ use work.test_types.all;
 use work.test_type_methods.all;
 
 package log_special_types_pkg is
+  type log_call_info_t is record
+    pass_to_display : boolean;
+    pass_to_file : boolean;
+  end record log_call_info_t;
+
   type log_call_args_t is record
     valid : boolean;
     logger : logger_cfg_export_t;
@@ -46,6 +51,9 @@ package log_special_types_pkg is
   impure function get_logger_init_call_count
     return natural;
 
+  procedure get_log_call_info (
+    variable info : out log_call_info_t);
+
   procedure get_log_call_args (
     variable args : out log_call_args_t);
 
@@ -61,7 +69,7 @@ package log_special_types_pkg is
       constant file_format    : in log_format_t := off;
       constant stop_level : in log_level_t := failure;
       constant separator            : in character  := ',';
-      constant append               : in boolean    := false);                                                                --file.
+      constant append               : in boolean    := false);
 
     procedure log(msg   : string;
                   log_level : log_level_t := info;
@@ -270,6 +278,37 @@ package body log_special_types_pkg is
     args := logger_init_call_args.get;
   end;
 
+  type log_call_info_pt is protected
+    procedure set (
+      constant info : in log_call_info_t);
+    impure function get
+      return log_call_info_t;
+  end protected log_call_info_pt;
+
+  type log_call_info_pt is protected body
+    variable log_call_info : log_call_info_t := (false, false);
+
+    procedure set (
+      constant info : in log_call_info_t) is
+    begin
+      log_call_info := info;
+    end procedure set;
+
+    impure function get
+      return log_call_info_t is
+    begin
+      return log_call_info;
+    end function get;
+  end protected body log_call_info_pt;
+
+  shared variable log_call_info : log_call_info_pt;
+
+  procedure get_log_call_info (
+    variable info : out log_call_info_t) is
+  begin
+    info := log_call_info.get;
+  end;
+
   type logger_t is protected body
     type report_args_internal_t is record
       valid : boolean;
@@ -364,20 +403,6 @@ package body log_special_types_pkg is
                   line_num : in natural := 0;
                   file_name : in string := "") is
 
-      procedure use_mock is
-        variable args : log_call_args_t;
-      begin  -- procedure use_mock
-        add(log_call_count, 1);
-        args.logger := get_logger_cfg;
-        args.msg(msg'range) := msg;
-        args.level := log_level;
-        args.src(src'range) := src;
-        args.line_num := line_num;
-        args.file_name(file_name'range) := file_name;
-        args.valid := true;
-        log_call_args.set(args);
-      end procedure use_mock;
-
       variable status  : file_open_status;
       variable l       : line;
       file log_file    : text;
@@ -389,14 +414,27 @@ package body log_special_types_pkg is
       variable selected_level_name : line;
       variable logger_cfg : logger_cfg_export_t;
 
+      procedure use_mock is
+        variable args : log_call_args_t;
+        variable info : log_call_info_t;
+      begin  -- procedure use_mock
+        add(log_call_count, 1);
+        args.logger := get_logger_cfg;
+        args.msg(msg'range) := msg;
+        args.level := log_level;
+        args.src(src'range) := src;
+        args.line_num := line_num;
+        args.file_name(file_name'range) := file_name;
+        args.valid := true;
+        log_call_args.set(args);
+
+        info.pass_to_display := pass_to_display;
+        info.pass_to_file := pass_to_file;
+        log_call_info.set(info);
+      end procedure use_mock;
+
     begin
       logger_cfg := get_logger_cfg;
-
-      if not (((logger_cfg.log_default_src(1 to 2) /= "__") and (logger_cfg.log_default_src_length >= 2)) or
-              ((logger_cfg.log_default_src(1 to 11) /= "Test Runner") and (logger_cfg.log_default_src_length = 11))) then
-        use_mock;
-        return;
-      end if;
 
       if selected_src /= null then
         deallocate(selected_src);
@@ -421,6 +459,12 @@ package body log_special_types_pkg is
       else
         pass_to_display := pass_filters(selected_level, "", display_handler);
         pass_to_file := pass_filters(selected_level, "", file_handler);
+      end if;
+
+      if not (((logger_cfg.log_default_src(1 to 2) /= "__") and (logger_cfg.log_default_src_length >= 2)) or
+              ((logger_cfg.log_default_src(1 to 11) /= "Test Runner") and (logger_cfg.log_default_src_length = 11))) then
+        use_mock;
+        return;
       end if;
 
       if pass_to_display or pass_to_file then

@@ -82,14 +82,28 @@ package body check_pkg is
 
   procedure disable_pass_msg is
   begin
-    enable_pass_msg(display_handler);
-    enable_pass_msg(file_handler);
+    disable_pass_msg(display_handler);
+    disable_pass_msg(file_handler);
   end;
 
   procedure disable_pass_msg (
     constant handler : in log_handler_t) is
   begin
     base_disable_pass_msg(default_checker, handler);
+  end;
+
+  procedure enable_pass_msg (
+    variable checker       : inout checker_t) is
+  begin
+    base_enable_pass_msg(checker, display_handler);
+    base_enable_pass_msg(checker, file_handler);
+  end;
+
+  procedure disable_pass_msg (
+    variable checker       : inout checker_t) is
+  begin
+    base_disable_pass_msg(checker, display_handler);
+    base_disable_pass_msg(checker, file_handler);
   end;
 
   procedure checker_init (

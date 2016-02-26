@@ -37,7 +37,9 @@ package test_support is
     constant expected_level  : in log_level_t := error;
     constant expected_src : in string := "";
     constant expected_line_num : in natural := 0;
-    constant expected_file_name : in string := "");
+    constant expected_file_name : in string := "";
+    constant expected_pass_to_display : in boolean := true;
+    constant expected_pass_to_file : in boolean := true);
 
   procedure verify_logger_init_call (
     constant expected_count  : in natural;
@@ -120,9 +122,12 @@ package body test_support is
     constant expected_level  : in log_level_t := error;
     constant expected_src : in string := "";
     constant expected_line_num : in natural := 0;
-    constant expected_file_name : in string := "") is
+    constant expected_file_name : in string := "";
+    constant expected_pass_to_display : in boolean := true;
+    constant expected_pass_to_file : in boolean := true) is
     variable call_count : natural;
     variable log_call_args : log_call_args_t;
+    variable log_call_info : log_call_info_t;
   begin
     call_count := get_log_call_count;
     counting_assert(call_count = expected_count, "Invalid report call count. Got " & natural'image(call_count) & " but was expecting " & natural'image(expected_count) & ".");
@@ -133,6 +138,12 @@ package body test_support is
     counting_assert(log_call_args.src(expected_src'range) = expected_src, "Wrong source. Got " &  log_call_args.src(expected_src'range) & " but expected " & expected_src & ".");
     counting_assert(log_call_args.line_num = expected_line_num, "Wrong line number.", error);
     counting_assert(log_call_args.file_name(expected_file_name'range) = expected_file_name, "Wrong file_name. Got " &  log_call_args.file_name(expected_file_name'range) & " but expected " & expected_file_name & ".");
+    get_log_call_info(log_call_info);
+    counting_assert(log_call_info.pass_to_display = expected_pass_to_display,
+                    "Expected pass message to display to be " & boolean'image(expected_pass_to_display));
+    counting_assert(log_call_info.pass_to_file = expected_pass_to_file,
+                    "Expected pass message to file to be " & boolean'image(expected_pass_to_file));
+
   end verify_log_call;
 
   procedure verify_logger_init_call (

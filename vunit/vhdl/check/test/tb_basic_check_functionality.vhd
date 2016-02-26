@@ -117,9 +117,33 @@ begin
         default_checker_init_from_scratch(append => true);
         verify_logger_init_call(inc_count(3), "", "error.csv", level, off, failure, ',', true);
 
+      elsif run("Verify default checker pass messaging and control") then
+        default_checker_init_from_scratch;
+        check(true);
+        verify_num_of_log_calls(get_count);
+        enable_pass_msg(display_handler);
+        check(true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", true, false);
+        disable_pass_msg(display_handler);
+        enable_pass_msg(file_handler);
+        check(true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", false, true);
+        disable_pass_msg(file_handler);
+        check(true);
+        verify_num_of_log_calls(get_count);
+        enable_pass_msg;
+        check(true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", true, true);
+        disable_pass_msg;
+        check(true);
+        verify_num_of_log_calls(get_count);
+
       elsif run("Verify custom checker basic functionality") then
         custom_checker_init_from_scratch(my_checker);
-        verify_logger_init_call(inc_count(3), "", "error.csv", level, off, failure, ',', false);
+        verify_logger_init_call(set_count(3, get_count(3) + 2), "", "error.csv", level, off, failure, ',', false);
         get_checker_stat(my_checker, stat_before);
         check(my_checker, true);
         verify_num_of_log_calls(get_count);
@@ -181,6 +205,33 @@ begin
         verify_logger_init_call(inc_count(3), "", "error.csv", level, off, failure, '@');
         custom_checker_init_from_scratch(my_checker,append => true);
         verify_logger_init_call(inc_count(3), "", "error.csv", level, off, failure, ',', true);
+
+      elsif run("Verify custom checker pass messaging and control") then
+        custom_checker_init_from_scratch(my_checker);
+        check(my_checker, true);
+        verify_num_of_log_calls(get_count);
+        enable_pass_msg(my_checker, display_handler);
+        check(my_checker, true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", true, false);
+        disable_pass_msg(my_checker, display_handler);
+        enable_pass_msg(my_checker, file_handler);
+        check(my_checker, true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", false, true);
+        disable_pass_msg(my_checker, file_handler);
+        check(my_checker, true);
+        verify_num_of_log_calls(get_count);
+        enable_pass_msg(my_checker);
+        disable_pass_msg;
+        check(my_checker, true, "Checking something", error, 73, "a_file.vhd");
+        verify_log_call(inc_count, "Checking something", debug_low2, "",
+                        73, "a_file.vhd", true, true);
+        disable_pass_msg(my_checker);
+        enable_pass_msg;
+        check(my_checker, true);
+        verify_num_of_log_calls(get_count);
+        disable_pass_msg;
 
       elsif run("Verify checker_stat_t functions and operators") then
         counting_assert(stat1 = (0, 0, 0), "Expected initial stat value = (0, 0, 0)");
