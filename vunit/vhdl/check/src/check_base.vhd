@@ -43,14 +43,18 @@ package body check_base_pkg is
     variable checker : inout checker_t;
     constant handler : in log_handler_t) is
   begin
+    -- pragma translate_off
     checker.enable_pass_msg(handler);
+    -- pragma translate_on
   end;
 
   procedure base_disable_pass_msg (
     variable checker : inout checker_t;
     constant handler : in log_handler_t) is
   begin
+    -- pragma translate_off
     checker.disable_pass_msg(handler);
+    -- pragma translate_on
   end;
 
   procedure base_check(

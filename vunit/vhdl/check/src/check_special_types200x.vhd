@@ -73,9 +73,9 @@ package body check_special_types_pkg is
     variable stat   : checker_stat_t := (0, 0, 0);
     variable logger : logger_t;
     variable pass_display_filter : log_filter_t;
-    variable pass_display_filter_active : boolean := true;
+    variable pass_display_filter_inactive : boolean := false;
     variable pass_file_filter : log_filter_t;
-    variable pass_file_filter_active : boolean := true;
+    variable pass_file_filter_inactive : boolean := false;
 
     procedure init (
       constant default_level        : in log_level_t := error;
@@ -99,11 +99,11 @@ package body check_special_types_pkg is
     procedure enable_pass_msg (
       constant handler : in log_handler_t) is
     begin
-      if (handler = display_handler) and pass_display_filter_active then
-        pass_display_filter_active := false;
+      if (handler = display_handler) and not pass_display_filter_inactive then
+        pass_display_filter_inactive := true;
         logger.remove_filter(pass_display_filter);
-      elsif (handler = file_handler) and pass_file_filter_active then
-        pass_file_filter_active := false;
+      elsif (handler = file_handler) and not pass_file_filter_inactive then
+        pass_file_filter_inactive := true;
         logger.remove_filter(pass_file_filter);
       end if;
     end;
@@ -111,11 +111,11 @@ package body check_special_types_pkg is
     procedure disable_pass_msg (
       constant handler : in log_handler_t) is
     begin
-      if (handler = display_handler) and not pass_display_filter_active then
-        pass_display_filter_active := true;
+      if (handler = display_handler) and pass_display_filter_inactive then
+        pass_display_filter_inactive := false;
         logger.add_filter(pass_display_filter, (1 => pass_level), "", false, (1 => display_handler));
-      elsif (handler = file_handler) and not pass_file_filter_active then
-        pass_file_filter_active := true;
+      elsif (handler = file_handler) and pass_file_filter_inactive then
+        pass_file_filter_inactive := false;
         logger.add_filter(pass_file_filter, (1 => pass_level), "", false, (1 => file_handler));
       end if;
     end;
@@ -135,7 +135,7 @@ package body check_special_types_pkg is
           logger.log(msg, level, "", line_num, file_name);
         end if;
       else
-        if not (pass_display_filter_active and pass_file_filter_active) then
+        if pass_display_filter_inactive or pass_file_filter_inactive then
           logger.log(msg, pass_level, "", line_num, file_name);
         end if;
         stat.n_passed := stat.n_passed + 1;
@@ -166,7 +166,7 @@ package body check_special_types_pkg is
       constant line_num  : in    natural     := 0;
       constant file_name : in    string      := "") is
     begin
-      if not (pass_display_filter_active and pass_file_filter_active) then
+      if pass_display_filter_inactive or pass_file_filter_inactive then
         logger.log(msg, pass_level, "", line_num, file_name);
       end if;
     end;
