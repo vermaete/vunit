@@ -23,7 +23,7 @@ package body check_pkg is
     constant count : natural)
     return boolean_vector is
     variable ret_val : boolean_vector(0 to arg'length - 1) := (others => false);
-    variable temp : boolean_vector(0 to arg'length - 1) := arg;
+    variable temp    : boolean_vector(0 to arg'length - 1) := arg;
   begin
     ret_val(count to ret_val'right) := temp(0 to ret_val'right - count);
 
@@ -32,10 +32,10 @@ package body check_pkg is
   constant max_supported_num_of_bits_in_integer_implementation : natural := 256;
 
   function failed_expectation_msg (
-    constant what_failed  : string;
-    constant got      : string;
-    constant expected : string;
-    constant msg : string := "")
+    constant what_failed : string;
+    constant got         : string;
+    constant expected    : string;
+    constant msg         : string := "")
     return string is
   begin
     if msg = "" then
@@ -51,21 +51,21 @@ package body check_pkg is
     constant file_name      : in string       := "error.csv";
     constant display_format : in log_format_t := level;
     constant file_format    : in log_format_t := off;
-    constant stop_level : in log_level_t := failure;
+    constant stop_level     : in log_level_t  := failure;
     constant separator      : in character    := ',';
     constant append         : in boolean      := false) is
   begin
     -- pragma translate_off
     base_init(default_checker,
-         default_level,
-         default_src,
-         file_name,
-         display_format,
-         file_format,
-         stop_level,
-         separator,
-         append);
-    -- pragma translate_on
+              default_level,
+              default_src,
+              file_name,
+              display_format,
+              file_format,
+              stop_level,
+              separator,
+              append);
+  -- pragma translate_on
   end checker_init;
 
   procedure enable_pass_msg is
@@ -93,14 +93,14 @@ package body check_pkg is
   end;
 
   procedure enable_pass_msg (
-    variable checker       : inout checker_t) is
+    variable checker : inout checker_t) is
   begin
     base_enable_pass_msg(checker, display_handler);
     base_enable_pass_msg(checker, file_handler);
   end;
 
   procedure disable_pass_msg (
-    variable checker       : inout checker_t) is
+    variable checker : inout checker_t) is
   begin
     base_disable_pass_msg(checker, display_handler);
     base_disable_pass_msg(checker, file_handler);
@@ -113,17 +113,17 @@ package body check_pkg is
     variable cfg : logger_cfg_t;
   begin
     -- pragma translate_off
-    get_logger_cfg(logger,cfg);
+    get_logger_cfg(logger, cfg);
     checker_init(checker,
-         default_level,
-         cfg.log_default_src.all,
-         cfg.log_file_name.all,
-         cfg.log_display_format,
-         cfg.log_file_format,
-         cfg.log_stop_level,
-         cfg.log_separator,
-         true);
-    -- pragma translate_on
+                 default_level,
+                 cfg.log_default_src.all,
+                 cfg.log_file_name.all,
+                 cfg.log_display_format,
+                 cfg.log_file_format,
+                 cfg.log_stop_level,
+                 cfg.log_separator,
+                 true);
+  -- pragma translate_on
   end;
 
   procedure checker_init (
@@ -132,9 +132,9 @@ package body check_pkg is
   begin
     -- pragma translate_off
     checker_init(default_checker,
-         default_level,
-         logger);
-    -- pragma translate_on
+                 default_level,
+                 logger);
+  -- pragma translate_on
   end checker_init;
 
   procedure check(
@@ -166,7 +166,7 @@ package body check_pkg is
 
   procedure check_no_pass_msg(
     variable checker   : inout checker_t;
-    variable all_pass      : inout   boolean;
+    variable all_pass  : inout boolean;
     constant expr      : in    boolean;
     constant msg       : in    string      := "Check failed!";
     constant level     : in    log_level_t := dflt;
@@ -181,10 +181,10 @@ package body check_pkg is
 
   procedure log_pass_msg(
     variable checker   : inout checker_t;
-    variable pass      : in   boolean;
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "") is
+    variable pass      : in    boolean;
+    constant msg       : in    string  := "Check.";
+    constant line_num  : in    natural := 0;
+    constant file_name : in    string  := "") is
   begin
     if pass then
       base_log_pass_msg(checker, msg, line_num, file_name);
@@ -203,11 +203,11 @@ package body check_pkg is
   end;
 
   impure function check(
-    constant expr      : in  boolean;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in boolean;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -240,9 +240,9 @@ package body check_pkg is
     return checker_stat_t is
     variable sum : checker_stat_t;
   begin
-      sum.n_checks := stat1.n_checks + stat2.n_checks;
-      sum.n_passed := stat1.n_passed + stat2.n_passed;
-      sum.n_failed := stat1.n_failed + stat2.n_failed;
+    sum.n_checks := stat1.n_checks + stat2.n_checks;
+    sum.n_passed := stat1.n_passed + stat2.n_passed;
+    sum.n_failed := stat1.n_failed + stat2.n_failed;
 
     return sum;
   end function "+";
@@ -253,9 +253,9 @@ package body check_pkg is
     return checker_stat_t is
     variable diff : checker_stat_t;
   begin
-      diff.n_checks := stat1.n_checks - stat2.n_checks;
-      diff.n_passed := stat1.n_passed - stat2.n_passed;
-      diff.n_failed := stat1.n_failed - stat2.n_failed;
+    diff.n_checks := stat1.n_checks - stat2.n_checks;
+    diff.n_passed := stat1.n_passed - stat2.n_passed;
+    diff.n_failed := stat1.n_failed - stat2.n_failed;
 
     return diff;
   end function "-";
@@ -314,10 +314,10 @@ package body check_pkg is
   end function checker_found_errors;
 
   procedure wait_on_edge (
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
     constant active_clock_edge : in edge_t;
-    constant n_edges    : in positive := 1) is
+    constant n_edges           : in positive := 1) is
   begin
     for i in 1 to n_edges loop
       if active_clock_edge = rising_edge then
@@ -333,10 +333,10 @@ package body check_pkg is
   end wait_on_edge;
 
   function start_condition (
-    signal clock        : std_logic;
+    signal clock               : std_logic;
     constant active_clock_edge : edge_t;
-    signal start_event  : std_logic;
-    signal en           : std_logic)
+    signal start_event         : std_logic;
+    signal en                  : std_logic)
     return boolean is
   begin
     if (to_x01(start_event) = '0') or (to_x01(en) /= '1') then
@@ -357,23 +357,23 @@ package body check_pkg is
   -----------------------------------------------------------------------------
   procedure check_passed(
     variable checker   : inout checker_t;
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "") is
+    constant msg       : in    string  := "Check.";
+    constant line_num  : in    natural := 0;
+    constant file_name : in    string  := "") is
   begin
     -- pragma translate_off
     check(checker, true, msg, dflt, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_passed(
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "") is
+    constant msg       : in string  := "Check.";
+    constant line_num  : in natural := 0;
+    constant file_name : in string  := "") is
   begin
     -- pragma translate_off
     check(true, msg, dflt, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
@@ -388,7 +388,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, false, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_failed(
@@ -399,27 +399,27 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(false, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_true
   -----------------------------------------------------------------------------
   procedure check_true(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, to_x01(expr) = '1', msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_true(
@@ -433,7 +433,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_true(
@@ -447,7 +447,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_true(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_true(
@@ -460,7 +460,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_true(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_true(
@@ -473,15 +473,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_true(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_true(
-    constant expr      : in  boolean;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in boolean;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -492,38 +492,38 @@ package body check_pkg is
   end;
 
   procedure check_true(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_true(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_false
   -----------------------------------------------------------------------------
   procedure check_false(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, to_x01(expr) = '0', msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_false(
@@ -537,7 +537,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_true(checker, pass, not expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_false(
@@ -551,7 +551,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_false(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_false(
@@ -564,7 +564,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_false(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_false(
@@ -577,15 +577,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_false(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_false(
-    constant expr      : in  boolean;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in boolean;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -596,39 +596,39 @@ package body check_pkg is
   end;
 
   procedure check_false(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_false(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_implication
   -----------------------------------------------------------------------------
   procedure check_implication(
-    variable checker       : inout checker_t;
-    signal clock           : in    std_logic;
-    signal en              : in    std_logic;
-    signal antecedent_expr : in    std_logic;
-    signal consequent_expr : in    std_logic;
-    constant msg           : in    string           := "Check failed!";
-    constant level         : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num      : in    natural          := 0;
-    constant file_name     : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal antecedent_expr     : in    std_logic;
+    signal consequent_expr     : in    std_logic;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, (to_x01(antecedent_expr) = '0') or (to_x01(consequent_expr) = '1'), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_implication(
@@ -643,23 +643,23 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, (not antecedent_expr) or consequent_expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_implication(
-    signal clock           : in std_logic;
-    signal en              : in std_logic;
-    signal antecedent_expr : in std_logic;
-    signal consequent_expr : in std_logic;
-    constant msg           : in string           := "Check failed!";
-    constant level         : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num      : in natural          := 0;
-    constant file_name     : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal antecedent_expr     : in std_logic;
+    signal consequent_expr     : in std_logic;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_implication(default_checker, clock, en, antecedent_expr, consequent_expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_implication(
@@ -674,7 +674,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_implication(checker, pass, antecedent_expr, consequent_expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_implication(
@@ -688,7 +688,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_implication(default_checker, pass, antecedent_expr, consequent_expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_implication(
@@ -702,16 +702,16 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_implication(default_checker, pass, antecedent_expr, consequent_expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_implication(
-    constant antecedent_expr : in  boolean;
-    constant consequent_expr : in  boolean;
-    constant msg             : in  string      := "Check failed!";
-    constant level           : in  log_level_t := dflt;
-    constant line_num        : in  natural     := 0;
-    constant file_name       : in  string      := "")
+    constant antecedent_expr : in boolean;
+    constant consequent_expr : in boolean;
+    constant msg             : in string      := "Check failed!";
+    constant level           : in log_level_t := dflt;
+    constant line_num        : in natural     := 0;
+    constant file_name       : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -725,123 +725,123 @@ package body check_pkg is
   -- check_stable
   -----------------------------------------------------------------------------
   procedure check_stable(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal start_event  : in    std_logic;
-    signal end_event    : in    std_logic;
-    signal expr         : in    std_logic_vector;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
-    variable ref : std_logic_vector(expr'range);
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal start_event         : in    std_logic;
+    signal end_event           : in    std_logic;
+    signal expr                : in    std_logic_vector;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
+    variable ref  : std_logic_vector(expr'range);
     variable pass : boolean := true;
   begin
     -- pragma translate_off
     wait on clock until start_condition(clock, active_clock_edge, start_event, en);
-    if to_x01(start_event) = 'X' then
-      check_failed(checker, "Unknown start event.", level, line_num, file_name);
-      return;
-    end if;
-    ref := to_x01(expr);
-    check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-    while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
-      wait_on_edge(clock, en, active_clock_edge);
+    check_no_pass_msg(checker, pass, to_x01(start_event) /= 'X', "Unknown start event.", level, line_num, file_name);
+    if pass then
+      ref := to_x01(expr);
       check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-      check_no_pass_msg(checker, pass, ref = to_x01(expr), msg, level, line_num, file_name);
-    end loop;
-    check_no_pass_msg(checker, pass, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
-    log_pass_msg(checker, pass, msg, line_num, file_name);
-    -- pragma translate_on
+      while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
+        wait_on_edge(clock, en, active_clock_edge);
+        check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
+        check_no_pass_msg(checker, pass, ref = to_x01(expr), msg, level, line_num, file_name);
+      end loop;
+      check_no_pass_msg(checker, pass, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
+      log_pass_msg(checker, pass, msg, line_num, file_name);
+    end if;
+  -- pragma translate_on
   end;
 
   procedure check_stable(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal start_event  : in std_logic;
-    signal end_event    : in std_logic;
-    signal expr         : in std_logic_vector;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal start_event         : in std_logic;
+    signal end_event           : in std_logic;
+    signal expr                : in std_logic_vector;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
-    check_stable(default_checker, clock, en, start_event, end_event, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+    check_stable(default_checker, clock, en, start_event, end_event, expr, msg, level, active_clock_edge,
+                 line_num, file_name);
+  -- pragma translate_on
   end;
 
   procedure check_stable(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal start_event  : in    std_logic;
-    signal end_event    : in    std_logic;
-    signal expr         : in    std_logic;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
-    variable ref : std_logic;
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal start_event         : in    std_logic;
+    signal end_event           : in    std_logic;
+    signal expr                : in    std_logic;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
+    variable ref  : std_logic;
     variable pass : boolean := true;
   begin
     -- pragma translate_off
     wait on clock until start_condition(clock, active_clock_edge, start_event, en);
-    if to_x01(start_event) = 'X' then
-      check_failed(checker, "Unknown start event.", level, line_num, file_name);
-      return;
-    end if;
-    ref := to_x01(expr);
-    check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-    while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
-      wait_on_edge(clock, en, active_clock_edge);
+    check_no_pass_msg(checker, pass, to_x01(start_event) /= 'X', "Unknown start event.", level, line_num, file_name);
+    if pass then
+      ref := to_x01(expr);
       check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
-      check_no_pass_msg(checker, pass, ref = to_x01(expr), msg, level, line_num, file_name);
-    end loop;
-    check_no_pass_msg(checker, pass, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
-    log_pass_msg(checker, pass, msg, line_num, file_name);
-    -- pragma translate_on
+      while (to_x01(end_event) = '0') or (to_x01(en) /= '1') loop
+        wait_on_edge(clock, en, active_clock_edge);
+        check_no_pass_msg(checker, pass, not is_x(expr), "Unknown data in window.", level, line_num, file_name);
+        check_no_pass_msg(checker, pass, ref = to_x01(expr), msg, level, line_num, file_name);
+      end loop;
+      check_no_pass_msg(checker, pass, to_x01(end_event) /= 'X', "Unknown end event.", level, line_num, file_name);
+      log_pass_msg(checker, pass, msg, line_num, file_name);
+    end if;
+  -- pragma translate_on
   end;
 
   procedure check_stable(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal start_event  : in std_logic;
-    signal end_event    : in std_logic;
-    signal expr         : in std_logic;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal start_event         : in std_logic;
+    signal end_event           : in std_logic;
+    signal expr                : in std_logic;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
-    check_stable(default_checker, clock, en, start_event, end_event, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+    check_stable(default_checker, clock, en, start_event, end_event, expr, msg, level, active_clock_edge,
+                 line_num, file_name);
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_not_unknown
   -----------------------------------------------------------------------------
   procedure check_not_unknown(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic_vector;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic_vector;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, not is_x(expr), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -855,22 +855,22 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, not is_x(expr), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic_vector;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic_vector;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -884,7 +884,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -897,7 +897,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -910,15 +910,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_not_unknown(
-    constant expr      : in  std_logic_vector;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in std_logic_vector;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -929,20 +929,20 @@ package body check_pkg is
   end;
 
   procedure check_not_unknown(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, not is_x(expr), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -956,22 +956,22 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, not is_x(expr), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -985,7 +985,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -998,7 +998,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_not_unknown(
@@ -1011,15 +1011,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_not_unknown(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_not_unknown(
-    constant expr      : in  std_logic;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in std_logic;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1052,20 +1052,20 @@ package body check_pkg is
   end function n_hot_in_valid_range;
 
   procedure check_zero_one_hot(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic_vector;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic_vector;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, n_hot_in_valid_range(expr, 0, 1), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_zero_one_hot(
@@ -1080,22 +1080,22 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, n_hot_in_valid_range(expr, 0, 1), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_zero_one_hot(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic_vector;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic_vector;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_zero_one_hot(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_zero_one_hot(
@@ -1108,15 +1108,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_zero_one_hot(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_zero_one_hot(
-    constant expr      : in  std_logic_vector;
-    constant msg       : in  string      := "Check failed!";
-    constant level     : in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in std_logic_vector;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1137,7 +1137,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_zero_one_hot(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_zero_one_hot(
@@ -1150,27 +1150,27 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_zero_one_hot(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_one_hot
   -----------------------------------------------------------------------------
   procedure check_one_hot(
-    variable checker    : inout checker_t;
-    signal clock        : in    std_logic;
-    signal en           : in    std_logic;
-    signal expr         : in    std_logic_vector;
-    constant msg        : in    string           := "Check failed!";
-    constant level      : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in    natural          := 0;
-    constant file_name  : in    string           := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal expr                : in    std_logic_vector;
+    constant msg               : in    string      := "Check failed!";
+    constant level             : in    log_level_t := dflt;
+    constant active_clock_edge : in    edge_t      := rising_edge;
+    constant line_num          : in    natural     := 0;
+    constant file_name         : in    string      := "") is
   begin
     -- pragma translate_off
     wait_on_edge(clock, en, active_clock_edge);
     check(checker, n_hot_in_valid_range(expr, 1, 1), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_one_hot(
@@ -1185,22 +1185,22 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check(checker, pass, n_hot_in_valid_range(expr, 1, 1), msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_one_hot(
-    signal clock        : in std_logic;
-    signal en           : in std_logic;
-    signal expr         : in std_logic_vector;
-    constant msg        : in string           := "Check failed!";
-    constant level      : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num   : in natural          := 0;
-    constant file_name  : in string           := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal expr                : in std_logic_vector;
+    constant msg               : in string      := "Check failed!";
+    constant level             : in log_level_t := dflt;
+    constant active_clock_edge : in edge_t      := rising_edge;
+    constant line_num          : in natural     := 0;
+    constant file_name         : in string      := "") is
   begin
     -- pragma translate_off
     check_one_hot(default_checker, clock, en, expr, msg, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_one_hot(
@@ -1213,15 +1213,15 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_one_hot(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_one_hot(
-    constant expr      : in  std_logic_vector;
-    constant msg       : in  string      := "Check failed!";
-    constant level     :  in  log_level_t := dflt;
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in std_logic_vector;
+    constant msg       : in string      := "Check failed!";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1242,7 +1242,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_one_hot(checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_one_hot(
@@ -1255,7 +1255,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_one_hot(default_checker, pass, expr, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
@@ -1267,14 +1267,14 @@ package body check_pkg is
     signal en                    : in    std_logic;
     signal start_event           : in    std_logic;
     signal expr                  : in    std_logic;
-    constant msg                 : in    string           := "Check failed!";
-    constant num_cks             : in    positive         := 1;
-    constant allow_overlapping   : in    boolean          := true;
-    constant allow_missing_start : in    boolean          := true;
-    constant level               : in    log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num            : in    natural          := 0;
-    constant file_name           : in    string           := "") is
+    constant msg                 : in    string      := "Check failed!";
+    constant num_cks             : in    positive    := 1;
+    constant allow_overlapping   : in    boolean     := true;
+    constant allow_missing_start : in    boolean     := true;
+    constant level               : in    log_level_t := dflt;
+    constant active_clock_edge   : in    edge_t      := rising_edge;
+    constant line_num            : in    natural     := 0;
+    constant file_name           : in    string      := "") is
 
     variable schedule : boolean_vector(0 to num_cks) := (others => false);
 
@@ -1335,7 +1335,7 @@ package body check_pkg is
 
       update_remaining_times_to_scheduled_checks(schedule, num_cks);
     end loop;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_next(
@@ -1343,44 +1343,45 @@ package body check_pkg is
     signal en                    : in std_logic;
     signal start_event           : in std_logic;
     signal expr                  : in std_logic;
-    constant msg                 : in string           := "Check failed!";
-    constant num_cks             : in positive         := 1;
-    constant allow_overlapping   : in boolean          := true;
-    constant allow_missing_start : in boolean          := true;
-    constant level               : in log_level_t      := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num            : in natural          := 0;
-    constant file_name           : in string           := "") is
+    constant msg                 : in string      := "Check failed!";
+    constant num_cks             : in positive    := 1;
+    constant allow_overlapping   : in boolean     := true;
+    constant allow_missing_start : in boolean     := true;
+    constant level               : in log_level_t := dflt;
+    constant active_clock_edge   : in edge_t      := rising_edge;
+    constant line_num            : in natural     := 0;
+    constant file_name           : in string      := "") is
   begin
     -- pragma translate_off
-    check_next(default_checker, clock, en, start_event, expr, msg, num_cks, allow_overlapping, allow_missing_start, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+    check_next(default_checker, clock, en, start_event, expr, msg, num_cks, allow_overlapping,
+               allow_missing_start, level, active_clock_edge, line_num, file_name);
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
   -- check_sequence
   -----------------------------------------------------------------------------
   procedure check_sequence(
-    variable checker             : inout checker_t;
-    signal clock                 : in    std_logic;
-    signal en                    : in    std_logic;
-    signal event_sequence        : in    std_logic_vector;
-    constant msg                 : in    string                  := "Check failed!";
-    constant trigger_event : in    trigger_event_t := penultimate;
-    constant level               : in    log_level_t             := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num            : in    natural                 := 0;
-    constant file_name           : in    string                  := "") is
+    variable checker           : inout checker_t;
+    signal clock               : in    std_logic;
+    signal en                  : in    std_logic;
+    signal event_sequence      : in    std_logic_vector;
+    constant msg               : in    string          := "Check failed!";
+    constant trigger_event     : in    trigger_event_t := penultimate;
+    constant level             : in    log_level_t     := dflt;
+    constant active_clock_edge : in    edge_t          := rising_edge;
+    constant line_num          : in    natural         := 0;
+    constant file_name         : in    string          := "") is
 
     variable expected_events : boolean_vector(0 to event_sequence'length - 1) := (others => false);
-    variable tracks : boolean_vector(0 to event_sequence'length - 1) := (others => false);
+    variable tracks          : boolean_vector(0 to event_sequence'length - 1) := (others => false);
 
     procedure find_new_and_update_existing_tracks (
-      variable tracks : inout boolean_vector;
-      constant event_sequence : in std_logic_vector) is
+      variable tracks         : inout boolean_vector;
+      constant event_sequence : in    std_logic_vector) is
 
-      variable seq : std_logic_vector(0 to event_sequence'length - 1) := event_sequence;
-      variable unknown_event_in_sequence : boolean := false;
+      variable seq                       : std_logic_vector(0 to event_sequence'length - 1) := event_sequence;
+      variable unknown_event_in_sequence : boolean                                          := false;
 
       function active_tracks (
         constant tracks : in boolean_vector)
@@ -1417,7 +1418,7 @@ package body check_pkg is
     end find_new_and_update_existing_tracks;
 
     procedure update_expectations_on_events_in_next_cycle (
-      constant tracks : in boolean_vector;
+      constant tracks          : in    boolean_vector;
       variable expected_events : inout boolean_vector) is
     begin
       if trigger_event = penultimate then
@@ -1430,12 +1431,13 @@ package body check_pkg is
 
     procedure verify_expected_events (
       constant expected_events : in boolean_vector;
-      constant event_sequence : in std_logic_vector) is
+      constant event_sequence  : in std_logic_vector) is
       variable seq : std_logic_vector(0 to event_sequence'length - 1) := event_sequence;
     begin
       for i in 1 to seq'right loop
         if expected_events(i) then
-          check(checker, to_x01(seq(i)) = '1', "Missing required event in position " & natural'image(i) & " from left.", level, line_num, file_name);
+          check(checker, to_x01(seq(i)) = '1', "Missing required event in position " & natural'image(i) &
+                " from left.", level, line_num, file_name);
         end if;
       end loop;
     end procedure verify_expected_events;
@@ -1443,7 +1445,8 @@ package body check_pkg is
     variable valid_event_sequence_length : boolean;
   begin
     -- pragma translate_off
-    check(checker, valid_event_sequence_length, event_sequence'length >= 2, "Event sequence must be at least two events long.", level, line_num, file_name);
+    check(checker, valid_event_sequence_length, event_sequence'length >= 2,
+          "Event sequence must be at least two events long.", level, line_num, file_name);
 
     wait_on_edge(clock, en, active_clock_edge);
     while valid_event_sequence_length loop
@@ -1454,23 +1457,24 @@ package body check_pkg is
     end loop;
 
     wait;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_sequence(
-    signal clock                 : in std_logic;
-    signal en                    : in std_logic;
-    signal event_sequence        : in std_logic_vector;
-    constant msg                 : in string                  := "Check failed!";
-    constant trigger_event : in trigger_event_t := penultimate;
-    constant level               : in log_level_t             := dflt;
-    constant active_clock_edge : in edge_t := rising_edge;
-    constant line_num            : in natural                 := 0;
-    constant file_name           : in string                  := "") is
+    signal clock               : in std_logic;
+    signal en                  : in std_logic;
+    signal event_sequence      : in std_logic_vector;
+    constant msg               : in string          := "Check failed!";
+    constant trigger_event     : in trigger_event_t := penultimate;
+    constant level             : in log_level_t     := dflt;
+    constant active_clock_edge : in edge_t          := rising_edge;
+    constant line_num          : in natural         := 0;
+    constant file_name         : in string          := "") is
   begin
     -- pragma translate_off
-    check_sequence(default_checker, clock, en, event_sequence,msg, trigger_event, level, active_clock_edge, line_num, file_name);
-    -- pragma translate_on
+    check_sequence(default_checker, clock, en, event_sequence, msg, trigger_event, level, active_clock_edge,
+                   line_num, file_name);
+  -- pragma translate_on
   end;
 
   -----------------------------------------------------------------------------
@@ -1488,7 +1492,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_relation(checker, pass, expr, msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1511,21 +1515,21 @@ package body check_pkg is
     else
       check(checker, pass, expr, auto_msg & " " & msg, level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
     constant expr      : in boolean;
     constant msg       : in string      := "";
     constant level     : in log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in string      := "";
     constant line_num  : in natural     := 0;
     constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, expr, msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1533,22 +1537,22 @@ package body check_pkg is
     constant expr      : in  boolean;
     constant msg       : in  string      := "";
     constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in  string      := "";
     constant line_num  : in  natural     := 0;
     constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, expr, msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_relation(
-    constant expr      : in  boolean;
-    constant msg       : in  string      := "";
-    constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in boolean;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant auto_msg  : in string      := "";
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1570,7 +1574,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_relation(checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1585,21 +1589,21 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_relation(checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
     constant expr      : in std_ulogic;
     constant msg       : in string      := "";
     constant level     : in log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in string      := "";
     constant line_num  : in natural     := 0;
     constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1607,22 +1611,22 @@ package body check_pkg is
     constant expr      : in  std_ulogic;
     constant msg       : in  string      := "";
     constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in  string      := "";
     constant line_num  : in  natural     := 0;
     constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_relation(
-    constant expr      : in  std_ulogic;
-    constant msg       : in  string      := "";
-    constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in std_ulogic;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant auto_msg  : in string      := "";
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1644,7 +1648,7 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_relation(checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1659,21 +1663,21 @@ package body check_pkg is
   begin
     -- pragma translate_off
     check_relation(checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
     constant expr      : in bit;
     constant msg       : in string      := "";
     constant level     : in log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in string      := "";
     constant line_num  : in natural     := 0;
     constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_relation(
@@ -1681,22 +1685,22 @@ package body check_pkg is
     constant expr      : in  bit;
     constant msg       : in  string      := "";
     constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
+    constant auto_msg  : in  string      := "";
     constant line_num  : in  natural     := 0;
     constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_relation(default_checker, pass, (expr = '1'), msg, level, auto_msg, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_relation(
-    constant expr      : in  bit;
-    constant msg       : in  string      := "";
-    constant level     : in  log_level_t := dflt;
-    constant auto_msg  : in    string      := "";
-    constant line_num  : in  natural     := 0;
-    constant file_name : in  string      := "")
+    constant expr      : in bit;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant auto_msg  : in string      := "";
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1718,7 +1722,7 @@ package body check_pkg is
   end function "=";
 
   function "=" (
-    constant left : std_logic_vector;
+    constant left  : std_logic_vector;
     constant right : unsigned)
     return boolean is
   begin
@@ -1778,7 +1782,7 @@ package body check_pkg is
 
   function max (
     constant value_1 : integer;
-    constant value_2  : integer)
+    constant value_2 : integer)
     return integer is
   begin
     if value_1 > value_2 then
@@ -1791,11 +1795,11 @@ package body check_pkg is
   function required_num_of_unsigned_bits (
     constant value : natural)
     return natural is
-    variable max_value : natural := 0;
+    variable max_value       : natural := 0;
     variable required_length : natural := 1;
   begin
     for i in 0 to max_supported_num_of_bits_in_integer_implementation - 2 loop
-      max_value := max_value + 2 ** i;
+      max_value       := max_value + 2 ** i;
       exit when max_value >= value;
       required_length := required_length + 1;
     end loop;
@@ -1815,16 +1819,16 @@ package body check_pkg is
     constant value      : integer;
     constant min_length : natural)
     return signed is
-    variable ret_val : signed(255 downto 0);
-    variable min_value : integer := -1;
-    variable max_value : natural := 0;
+    variable ret_val         : signed(255 downto 0);
+    variable min_value       : integer := -1;
+    variable max_value       : natural := 0;
     variable required_length : natural := 1;
   begin
     if value < 0 then
       for i in 0 to max_supported_num_of_bits_in_integer_implementation - 1 loop
         exit when min_value <= value;
-        min_value := min_value * 2;
-        required_length := required_length + 1;
+        min_value           := min_value * 2;
+        required_length     := required_length + 1;
       end loop;
 
       return to_signed(value, max(min_length, required_length));
@@ -1834,42 +1838,42 @@ package body check_pkg is
   end to_sufficient_signed;
 
   procedure check_equal(
-    constant got             : in unsigned;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in unsigned;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  unsigned;
+    constant expected  : in  unsigned;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    unsigned;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -1881,31 +1885,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in unsigned;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    unsigned;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in unsigned;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in unsigned;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1916,42 +1920,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in unsigned;
-    constant expected        : in natural;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in unsigned;
+    constant expected  : in natural;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in natural;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  unsigned;
+    constant expected  : in  natural;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in natural;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    unsigned;
+    constant expected  : in    natural;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -1963,31 +1967,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_string(expected) & " (" & to_nibble_string(to_sufficient_unsigned(expected, got'length)) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in unsigned;
-    constant expected        : in natural;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    unsigned;
+    constant expected  : in    natural;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in unsigned;
-    constant expected        : in natural;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in unsigned;
+    constant expected  : in natural;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -1998,42 +2002,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in natural;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in natural;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in natural;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  natural;
+    constant expected  : in  unsigned;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in natural;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    natural;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2045,31 +2049,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_string(got) & " (" & to_nibble_string(to_sufficient_unsigned(got, expected'length)) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in natural;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    natural;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in natural;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in natural;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2080,42 +2084,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in unsigned;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in unsigned;
+    constant expected  : in std_logic_vector;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  unsigned;
+    constant expected  : in  std_logic_vector;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in unsigned;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    unsigned;
+    constant expected  : in    std_logic_vector;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2127,31 +2131,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in unsigned;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    unsigned;
+    constant expected  : in    std_logic_vector;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in unsigned;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in unsigned;
+    constant expected  : in std_logic_vector;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2162,42 +2166,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in std_logic_vector;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in std_logic_vector;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in std_logic_vector;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  std_logic_vector;
+    constant expected  : in  unsigned;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in std_logic_vector;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    std_logic_vector;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2209,31 +2213,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in std_logic_vector;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    std_logic_vector;
+    constant expected  : in    unsigned;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in std_logic_vector;
-    constant expected        : in unsigned;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in std_logic_vector;
+    constant expected  : in unsigned;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2244,42 +2248,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in std_logic_vector;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in std_logic_vector;
+    constant expected  : in std_logic_vector;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in std_logic_vector;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  std_logic_vector;
+    constant expected  : in  std_logic_vector;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in std_logic_vector;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    std_logic_vector;
+    constant expected  : in    std_logic_vector;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2291,31 +2295,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in std_logic_vector;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    std_logic_vector;
+    constant expected  : in    std_logic_vector;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in std_logic_vector;
-    constant expected        : in std_logic_vector;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in std_logic_vector;
+    constant expected  : in std_logic_vector;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2326,42 +2330,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in signed;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in signed;
+    constant expected  : in signed;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in signed;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  signed;
+    constant expected  : in  signed;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in signed;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    signed;
+    constant expected  : in    signed;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2373,31 +2377,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in signed;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    signed;
+    constant expected  : in    signed;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in signed;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in signed;
+    constant expected  : in signed;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2408,42 +2412,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in signed;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in signed;
+    constant expected  : in integer;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in signed;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  signed;
+    constant expected  : in  integer;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in signed;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    signed;
+    constant expected  : in    integer;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2455,31 +2459,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_nibble_string(got) & " (" & to_integer_string(got) & ")", to_string(expected) & " (" & to_nibble_string(to_sufficient_signed(expected, got'length)) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in signed;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    signed;
+    constant expected  : in    integer;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in signed;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in signed;
+    constant expected  : in integer;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2490,42 +2494,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in integer;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in integer;
+    constant expected  : in signed;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in integer;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  integer;
+    constant expected  : in  signed;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in integer;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    integer;
+    constant expected  : in    signed;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2537,31 +2541,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_string(got) & " (" & to_nibble_string(to_sufficient_signed(got, expected'length)) & ")", to_nibble_string(expected) & " (" & to_integer_string(expected) & ")", msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in integer;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    integer;
+    constant expected  : in    signed;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in integer;
-    constant expected        : in signed;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in integer;
+    constant expected  : in signed;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2572,42 +2576,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in integer;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in integer;
+    constant expected  : in integer;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in integer;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  integer;
+    constant expected  : in  integer;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in integer;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    integer;
+    constant expected  : in    integer;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2619,31 +2623,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_string(got), to_string(expected), msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in integer;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    integer;
+    constant expected  : in    integer;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in integer;
-    constant expected        : in integer;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in integer;
+    constant expected  : in integer;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2654,42 +2658,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in std_logic;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in std_logic;
+    constant expected  : in std_logic;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in std_logic;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  std_logic;
+    constant expected  : in  std_logic;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in std_logic;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    std_logic;
+    constant expected  : in    std_logic;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2701,31 +2705,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_string(got), to_string(expected), msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in std_logic;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    std_logic;
+    constant expected  : in    std_logic;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in std_logic;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in std_logic;
+    constant expected  : in std_logic;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2736,42 +2740,42 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in std_logic;
-    constant expected        : in boolean;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in std_logic;
+    constant expected  : in boolean;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable pass            : out boolean;
-    constant got             : in std_logic;
-    constant expected        : in boolean;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable pass      : out boolean;
+    constant got       : in  std_logic;
+    constant expected  : in  boolean;
+    constant msg       : in  string      := "";
+    constant level     : in  log_level_t := dflt;
+    constant line_num  : in  natural     := 0;
+    constant file_name : in  string      := "") is
   begin
     -- pragma translate_off
     check_equal(default_checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    variable pass            : out boolean;
-    constant got             : in std_logic;
-    constant expected        : in boolean;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    variable pass      : out   boolean;
+    constant got       : in    std_logic;
+    constant expected  : in    boolean;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
   begin
     -- pragma translate_off
     if got = expected then
@@ -2783,31 +2787,31 @@ package body check_pkg is
                    failed_expectation_msg("Equality check", to_string(got), to_string(expected), msg),
                    level, line_num, file_name);
     end if;
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   procedure check_equal(
-    variable checker         : inout checker_t;
-    constant got             : in std_logic;
-    constant expected        : in boolean;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    variable checker   : inout checker_t;
+    constant got       : in    std_logic;
+    constant expected  : in    boolean;
+    constant msg       : in    string      := "";
+    constant level     : in    log_level_t := dflt;
+    constant line_num  : in    natural     := 0;
+    constant file_name : in    string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
     check_equal(checker, pass, got, expected, msg, level, line_num, file_name);
-    -- pragma translate_on
+  -- pragma translate_on
   end;
 
   impure function check_equal(
-    constant got             : in std_logic;
-    constant expected        : in boolean;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "")
+    constant got       : in std_logic;
+    constant expected  : in boolean;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "")
     return boolean is
     variable pass : boolean;
   begin
@@ -2818,12 +2822,12 @@ package body check_pkg is
   end;
 
   procedure check_equal(
-    constant got             : in boolean;
-    constant expected        : in std_logic;
-    constant msg             : in string := "";
-    constant level           : in log_level_t := dflt;
-    constant line_num        : in natural     := 0;
-    constant file_name       : in string      := "") is
+    constant got       : in boolean;
+    constant expected  : in std_logic;
+    constant msg       : in string      := "";
+    constant level     : in log_level_t := dflt;
+    constant line_num  : in natural     := 0;
+    constant file_name : in string      := "") is
     variable pass : boolean;
   begin
     -- pragma translate_off
