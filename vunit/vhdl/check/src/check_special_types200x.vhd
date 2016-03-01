@@ -38,16 +38,11 @@ package check_special_types_pkg is
                     line_num     : in natural     := 0;
                     file_name    : in string      := "");
 
-    procedure check_no_pass_msg(expr         :    boolean;
+    procedure check_no_pass_record(expr         :    boolean;
                     msg          :    string;
                     level        :    log_level_t := dflt;
                     line_num     : in natural     := 0;
                     file_name    : in string      := "");
-
-    procedure log_pass_msg(
-      constant msg       : in    string      := "Check.";
-      constant line_num  : in    natural     := 0;
-      constant file_name : in    string      := "");
 
     impure function get_stat
       return checker_stat_t;
@@ -142,32 +137,20 @@ package body check_special_types_pkg is
       end if;
     end;
 
-    procedure check_no_pass_msg(expr         :    boolean;
+    procedure check_no_pass_record(expr         :    boolean;
                     msg          :    string;
                     level        :    log_level_t := dflt;
                     line_num     : in natural     := 0;
                     file_name    : in string      := "") is
     begin
-      stat.n_checks := stat.n_checks + 1;
       if (expr = false) then
+        stat.n_checks := stat.n_checks + 1;
         stat.n_failed := stat.n_failed + 1;
         if level = dflt then
           logger.log(msg, default_log_level, "", line_num, file_name);
         else
           logger.log(msg, level, "", line_num, file_name);
         end if;
-      else
-        stat.n_passed := stat.n_passed + 1;
-      end if;
-    end;
-
-    procedure log_pass_msg(
-      constant msg       : in    string      := "Check.";
-      constant line_num  : in    natural     := 0;
-      constant file_name : in    string      := "") is
-    begin
-      if pass_display_filter_inactive or pass_file_filter_inactive then
-        logger.log(msg, pass_level, "", line_num, file_name);
       end if;
     end;
 

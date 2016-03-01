@@ -35,6 +35,7 @@ begin
   test_runner : process
     alias default_checker_init_from_scratch is vunit_lib.check_pkg.checker_init[log_level_t, string, string, log_format_t, log_format_t, log_level_t, character, boolean];
     alias custom_checker_init_from_scratch is vunit_lib.check_base_pkg.base_init[checker_t, log_level_t, string, string, log_format_t, log_format_t, log_level_t, character, boolean];
+    constant pass_level : log_level_t := debug_low2;
 
     procedure banner (
       constant s : in string) is
@@ -86,6 +87,10 @@ begin
         stat_before := get_checker_stat;
         check_passed;
         verify_num_of_log_calls(get_count);
+        enable_pass_msg;
+        check_passed("Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
         check_failed;
         verify_log_call(inc_count, "Check failed!", error);
         check_failed("Custom error message");
@@ -96,7 +101,7 @@ begin
         verify_log_call(inc_count, "Line and file name", info,
                         expected_line_num => 377, expected_file_name => "some_file.vhd");
         stat_after := get_checker_stat;
-        counting_assert(stat_after = stat_before + (5, 4, 1), "Expected 5 checks, 4 fail, and 1 pass but got " & to_string(stat_after - stat_before));
+        counting_assert(stat_after = stat_before + (6, 4, 2), "Expected 5 checks, 4 fail, and 1 pass but got " & to_string(stat_after - stat_before));
 
       elsif run("Verify default checker initialization") then
         default_checker_init_from_scratch(default_level => info);

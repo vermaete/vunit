@@ -32,6 +32,7 @@ architecture test_fixture of tb_check_false is
   signal zero : std_logic := '0';
 
   shared variable check_false_checker, check_false_checker2, check_false_checker3, check_false_checker4  : checker_t;
+  constant pass_level : log_level_t := debug_low2;
 
 begin
   clock: process is
@@ -112,6 +113,11 @@ begin
         check_false(check_false_checker,pass, false);
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_false_checker, stat, 2);
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_false(false, "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test should be possible to use concurrently") then
         test_concurrent_check(clk, check_false_in_1, default_checker);
       elsif run("Test should be possible to use concurrently with negative active clock edge") then

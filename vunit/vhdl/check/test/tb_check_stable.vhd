@@ -14,6 +14,7 @@ use vunit_lib.run_base_pkg.all;
 use vunit_lib.run_pkg.all;
 use vunit_lib.log_types_pkg.all;
 use vunit_lib.log_base_pkg.all;
+use vunit_lib.log_special_types_pkg.all;
 use vunit_lib.check_types_pkg.all;
 use vunit_lib.check_special_types_pkg.all;
 use vunit_lib.check_pkg.all;
@@ -142,12 +143,12 @@ begin
         get_checker_stat(checker, stat);
         apply_sequence("00.101;10.101;00.101;01.101;00.101", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 7);
+        verify_passed_checks(checker, stat, 1);
       elsif running_test_case = "Test concurrent checker should pass window with varying drive strength" then
         get_checker_stat(checker, stat);
         apply_sequence("00.101;10.101;00.1LH;01.101;00.101", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 7);
+        verify_passed_checks(checker, stat, 1);
       elsif running_test_case = "Test concurrent checker should handle weak start and end events" then
         apply_sequence("00.101;HL.101;LL.111;LH.111;00.111", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
@@ -184,7 +185,7 @@ begin
         get_checker_stat(checker, stat);
         apply_sequence("00.101;11.101;10.111;01.111;00.111", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 8);
+        verify_passed_checks(checker, stat, 2);
       end if;
     end procedure test_concurrent_std_logic_vector_check;
 
@@ -199,12 +200,12 @@ begin
         get_checker_stat(checker, stat);
         apply_sequence("00.1;10.1;00.1;01.1;00.1", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 7);
+        verify_passed_checks(checker, stat, 1);
       elsif running_test_case = "Test concurrent checker should pass window with varying drive strength" then
         get_checker_stat(checker, stat);
         apply_sequence("00.1;10.1;00.H;01.1;00.1", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 7);
+        verify_passed_checks(checker, stat, 1);
       elsif running_test_case = "Test concurrent checker should handle weak start and end events" then
         apply_sequence("00.0;HL.0;LL.1;LH.1;00.1", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
@@ -240,7 +241,7 @@ begin
         get_checker_stat(checker, stat);
         apply_sequence("00.0;11.0;10.1;01.1;00.1", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 8);
+        verify_passed_checks(checker, stat, 2);
       end if;
     end procedure test_concurrent_std_logic_check;
 
@@ -289,7 +290,7 @@ begin
         apply_sequence("01.101;00.101", clk, check_stable_in_1);
         wait until rising_edge(clk);
         wait for 1 ns;
-        verify_passed_checks(stat, 15);
+        verify_passed_checks(stat, 3);
         verify_failed_checks(stat, 0);
       elsif run("Test concurrent checker with std_logic input should pass unstable window if not enabled") then
         wait until rising_edge(clk);
@@ -312,7 +313,7 @@ begin
         apply_sequence("01.0;00.0", clk, check_stable_in_5);
         wait until rising_edge(clk);
         wait for 1 ns;
-        verify_passed_checks(stat, 15);
+        verify_passed_checks(stat, 3);
         verify_failed_checks(stat, 0);
       elsif run("Test should handle reversed and or offset expressions") then
         wait until rising_edge(clk);
@@ -327,13 +328,14 @@ begin
         wait until rising_edge(clk);
         check_stable_end_event_4   <= '0';
         wait for 1 ns;
-        verify_passed_checks(stat, 7);
+        verify_passed_checks(stat, 1);
       elsif run("Test that pass message is generated if enabled") then
         wait until rising_edge(clk);
         wait for 1 ns;
         get_checker_stat(stat);
-        call_count := get_log_call_count;
         enable_pass_msg(display_handler);
+        apply_sequence("00.101;10.101;00.111;01.101;00.101;00.101", clk, check_stable_in_8);
+        verify_log_call(inc_count, "Checking stability", error);
         apply_sequence("00.101;10.101;00.101;01.101;00.101;00.101", clk, check_stable_in_8);
         verify_log_call(inc_count, "Checking stability", pass_level,
                         expected_pass_to_display => true, expected_pass_to_file => false);
@@ -343,9 +345,8 @@ begin
         verify_log_call(inc_count, "Checking stability", pass_level,
                         expected_pass_to_display => false, expected_pass_to_file => true);
         disable_pass_msg(file_handler);
-        verify_passed_checks(stat, 10);
-        verify_failed_checks(stat, 0);
-        verify_num_of_log_calls(call_count + 2);
+        verify_passed_checks(stat, 2);
+        verify_failed_checks(stat, 1);
       end if;
     end loop;
 

@@ -29,7 +29,8 @@ architecture test_fixture of tb_check_next is
   signal one : std_logic := '1';
   signal zero : std_logic := '0';
 
-  signal check_next_in_1, check_next_in_2, check_next_in_3, check_next_in_4, check_next_in_5 : std_logic_vector(1 to 3) := "001";
+  signal check_next_in_1, check_next_in_2, check_next_in_3, check_next_in_4,
+    check_next_in_5, check_next_in_6 : std_logic_vector(1 to 3) := "001";
   alias check_next_start_event_1 : std_logic is check_next_in_1(1);
   alias check_next_expr_1 : std_logic is check_next_in_1(2);
   alias check_next_en_1 : std_logic is check_next_in_1(3);
@@ -45,6 +46,9 @@ architecture test_fixture of tb_check_next is
   alias check_next_start_event_5 : std_logic is check_next_in_5(1);
   alias check_next_expr_5 : std_logic is check_next_in_5(2);
   alias check_next_en_5 : std_logic is check_next_in_5(3);
+  alias check_next_start_event_6 : std_logic is check_next_in_6(1);
+  alias check_next_expr_6 : std_logic is check_next_in_6(2);
+  alias check_next_en_6 : std_logic is check_next_in_6(3);
 
   shared variable check_next_checker2, check_next_checker3, check_next_checker4, check_next_checker5 : checker_t;
 begin
@@ -62,6 +66,7 @@ begin
                             check_next_start_event_1,
                             check_next_expr_1,
                             num_cks => 4);
+
   check_next_2 : check_next(check_next_checker2,
                             clk,
                             check_next_en_2,
@@ -89,10 +94,17 @@ begin
                             check_next_expr_5,
                             num_cks => 4,
                             allow_missing_start => false);
+  check_next_6 : check_next(clk,
+                            check_next_en_6,
+                            check_next_start_event_6,
+                            check_next_expr_6,
+                            "Checking",
+                            num_cks => 4);
 
   check_next_runner : process
     variable pass : boolean;
     variable stat : checker_stat_t;
+    constant pass_level : log_level_t := debug_low2;
 
     procedure test_concurrent_check (
       signal clk                        : in  std_logic;
@@ -128,7 +140,7 @@ begin
         get_checker_stat(checker, stat);
         apply_sequence("001;001;001;011;001", clk, check_input, active_rising_clock_edge);
         wait for 1 ns;
-        verify_passed_checks(checker, stat, 1);
+        verify_passed_checks(checker, stat, 0);
         verify_failed_checks(checker, stat, 0);
       end if;
 
@@ -151,7 +163,7 @@ begin
         get_checker_stat(check_next_checker4, stat);
         apply_sequence("001;101;001;101;001;011;001;011;001", clk, check_next_in_4);
         wait for 1 ns;
-        verify_passed_checks(check_next_checker4, stat, 2);
+        verify_passed_checks(check_next_checker4, stat, 1);
         verify_log_call(inc_count, "Overlapping not allowed.");
         get_checker_stat(check_next_checker4, stat);
         apply_sequence("001;101;001;001;001;111;001;001;001;011;001", clk, check_next_in_4);
@@ -188,6 +200,16 @@ begin
         wait for 1 ns;
         verify_passed_checks(check_next_checker5, stat, 1);
         verify_failed_checks(check_next_checker5, stat, 1);
+        verify_log_call(inc_count, "Unknown start event.");
+      elsif run("Test pass message") then
+        get_checker_stat(stat);
+        enable_pass_msg;
+        apply_sequence("001;101;001;011;001;011;001", clk, check_next_in_6);
+        wait for 1 ns;
+        disable_pass_msg;
+        verify_passed_checks(default_checker, stat, 1);
+        verify_failed_checks(default_checker, stat, 0);
+        verify_log_call(inc_count, "Checking", pass_level);
       end if;
     end loop;
 

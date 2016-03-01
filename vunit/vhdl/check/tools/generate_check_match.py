@@ -94,7 +94,7 @@ impl_template = """  procedure check_match(
     -- pragma translate_off
     if std_match(got, expected) then
       pass := true;
-      check_passed(checker);
+      check_passed(checker, msg, line_num, file_name);
     else
       pass := false;
       check_failed(checker,
@@ -154,7 +154,11 @@ test_template = """      elsif run("Test should pass on $left_type matching $rig
         check_match(check_match_checker, pass, $left_pass, $right_pass);
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_match_checker,stat, 2);
-
+      elsif run("Test pass message for $left_type matching $right_type") then
+        enable_pass_msg;
+        check_match($left_pass, $right_pass, "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test should fail on $left_type not matching $right_type") then
         check_match($left_pass, $right_fail_dc);
         verify_log_call(inc_count, "Matching failed! Got $pass_str. Expected $fail_dc_str.");

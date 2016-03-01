@@ -51,6 +51,7 @@ begin
   check_true_runner : process
     variable pass : boolean;
     variable stat : checker_stat_t;
+    constant pass_level : log_level_t := debug_low2;
 
     procedure test_concurrent_check (
       signal clk                        : in  std_logic;
@@ -97,6 +98,11 @@ begin
         check_true(check_true_checker, pass, true);
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_true_checker, stat, 2);
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_true(true, "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test should fail on false and logic 0 inputs to sequential checks") then
         check_true(false);
         verify_log_call(inc_count);

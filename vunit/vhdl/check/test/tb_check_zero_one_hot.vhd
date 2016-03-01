@@ -52,6 +52,7 @@ begin
     variable pass : boolean;
     variable stat : checker_stat_t;
     variable reversed_and_offset_expr : std_logic_vector(23 downto 20) := "1000";
+    constant pass_level : log_level_t := debug_low2;
 
     procedure test_concurrent_check (
       signal clk                        : in  std_logic;
@@ -126,6 +127,11 @@ begin
         check_zero_one_hot(check_zero_one_hot_checker3, pass, "HL00");
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_zero_one_hot_checker3, stat, 4);
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_zero_one_hot("0000", "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test should fail on more than one high bit") then
         check_zero_one_hot("1001");
         verify_log_call(inc_count);

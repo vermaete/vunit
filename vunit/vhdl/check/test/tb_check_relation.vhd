@@ -71,6 +71,7 @@ begin
     variable stat : checker_stat_t;
     variable check_relation_checker : checker_t;
     variable cash : cash_t := (99,95);
+    constant pass_level : log_level_t := debug_low2;
   begin
     test_runner_setup(runner, runner_cfg);
 
@@ -89,6 +90,11 @@ begin
         check_relation(check_relation_checker, pass, 5 > 3);
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_relation_checker, stat, 2);
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_relation(5 > 3, "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test that generated message is combined with a custom message") then
         check_relation(5 < 3, "Something is wrong.");
         verify_log_call(inc_count, "Relation 5 < 3 failed! Left is 5. Right is 3. Something is wrong.");

@@ -70,7 +70,7 @@ package body check_base_pkg is
     -- pragma translate_on
   end;
 
-  procedure base_check_no_pass_msg(
+  procedure base_check_no_pass_record(
     variable checker       : inout checker_t;
     constant expr         : in    boolean;
     constant msg          : in    string := "Check failed!";
@@ -79,18 +79,7 @@ package body check_base_pkg is
     constant file_name : in string := "") is
   begin
     -- pragma translate_off
-    checker.check_no_pass_msg(expr, msg, level, line_num, file_name);
-    -- pragma translate_on
-  end;
-
-  procedure base_log_pass_msg(
-    variable checker   : inout checker_t;
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "") is
-  begin
-    -- pragma translate_off
-    checker.log_pass_msg(msg, line_num, file_name);
+    checker.check_no_pass_record(expr, msg, level, line_num, file_name);
     -- pragma translate_on
   end;
 

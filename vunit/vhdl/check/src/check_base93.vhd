@@ -98,7 +98,7 @@ package body check_base_pkg is
     -- pragma translate_on
   end;
 
-  procedure base_check_no_pass_msg(
+  procedure base_check_no_pass_record(
     variable checker       : inout checker_t;
     constant expr         : in    boolean;
     constant msg          : in    string := "Check failed!";
@@ -107,8 +107,8 @@ package body check_base_pkg is
     constant file_name : in string := "") is
   begin
     -- pragma translate_off
-    checker.stat.n_checks := checker.stat.n_checks + 1;
     if (expr = false) then
+      checker.stat.n_checks := checker.stat.n_checks + 1;
       checker.stat.n_failed := checker.stat.n_failed + 1;
       if (level = dflt) and (checker.default_log_level = dflt) then
         log(checker.logger, msg, error, "", line_num, file_name);
@@ -117,21 +117,6 @@ package body check_base_pkg is
       else
         log(checker.logger, msg, level, "", line_num, file_name);
       end if;
-    else
-      checker.stat.n_passed := checker.stat.n_passed + 1;
-    end if;
-    -- pragma translate_on
-  end;
-
-  procedure base_log_pass_msg(
-    variable checker   : inout checker_t;
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "") is
-  begin
-    -- pragma translate_off
-    if checker.pass_display_filter_inactive or checker.pass_file_filter_inactive then
-      log(checker.logger, msg, pass_level, "", line_num, file_name);
     end if;
     -- pragma translate_on
   end;

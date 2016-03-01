@@ -43,19 +43,13 @@ package check_base_pkg is
     constant line_num : in natural := 0;
     constant file_name : in string := "");
 
-  procedure base_check_no_pass_msg(
+  procedure base_check_no_pass_record(
     variable checker       : inout checker_t;
     constant expr         : in    boolean;
     constant msg          : in    string := "Check failed!";
     constant level        : in    log_level_t := dflt;
     constant line_num : in natural := 0;
     constant file_name : in string := "");
-
-  procedure base_log_pass_msg(
-    variable checker   : inout checker_t;
-    constant msg       : in    string      := "Check.";
-    constant line_num  : in    natural     := 0;
-    constant file_name : in    string      := "");
 
   procedure base_get_checker_stat (
     variable checker : inout checker_t;

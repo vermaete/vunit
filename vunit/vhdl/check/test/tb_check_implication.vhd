@@ -68,6 +68,7 @@ begin
     constant test_implication_expected_result : boolean_vector(1 to 4) := (true, true, false, true);
     variable stat : checker_stat_t;
     constant metadata : std_logic_vector(1 to 7) := "UXZHLW-";
+    constant pass_level : log_level_t := debug_low2;
 
     procedure test_concurrent_check (
       signal clk                        : in  std_logic;
@@ -133,6 +134,11 @@ begin
           verify_result(i, check_implication_checker, stat);
 
         end loop;
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_implication(true, true, "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        disable_pass_msg;
       elsif run("Test should be possible to use concurrently") then
         test_concurrent_check(clk, check_implication_in_1, default_checker);
       elsif run("Test should be possible to use concurrently with negative active clock edge") then

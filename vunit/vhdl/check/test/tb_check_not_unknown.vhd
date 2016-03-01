@@ -68,6 +68,7 @@ begin
     constant metadata : std_logic_vector(1 to 5) := "UXZW-";
     constant not_unknowns : string(1 to 4) := "01LH";
     variable reversed_and_offset_expr : std_logic_vector(23 downto 16) := "10100101";
+    constant pass_level : log_level_t := debug_low2;
 
     procedure test_concurrent_check (
       signal clk                        : in  std_logic;
@@ -136,6 +137,13 @@ begin
         check_not_unknown(check_not_unknown_checker3, pass, "10100101");
         counting_assert(pass, "Should return pass = true on passing check");
         verify_passed_checks(check_not_unknown_checker3, stat, 4);
+      elsif run("Test pass message") then
+        enable_pass_msg;
+        check_not_unknown('0', "Checking");
+        verify_log_call(inc_count, "Checking", pass_level);
+        check_not_unknown("10", "Checking some more");
+        verify_log_call(inc_count, "Checking some more", pass_level);
+        disable_pass_msg;
       elsif run("Test should fail on all std logic values except zero and one") then
         for i in metadata'range loop
           test_expr := (others => metadata(i));
