@@ -14,8 +14,7 @@ Architecture
 
 The check subprograms are mainly a number conditional log messages. If
 the condition represents a failing check then an error message is issued
-using the VUnit :doc:`log package <../logging/user_guide>`. A passing
-check has no effect other than updating the passing check statistics.
+using the VUnit :doc:`log package <../logging/user_guide>`.
 
 Every check you do is handled by a checker. There is a default checker
 that is used when none is specified but you can also create multiple
@@ -137,6 +136,49 @@ failing test case doesn't propagate into the next. If you're not using
 the Python test runner and have ``stop_level`` at ``failure`` as a way
 to continue on ``error`` you don't have this guarantee.
 
+Passing Check
+~~~~~~~~~~~~~
+
+The provided message in a check call can also be logged when the check passes.
+This feature is disabled by default but can be enabled for all output handlers or
+just for one output handler.
+
+.. code-block:: vhdl
+
+    enable_pass_msg;
+    enable_pass_msg(file_handler);
+    enable_pass_msg(display_handler);
+
+``disable_pass_msg`` with or without an output handler parameter can be used to disable
+the feature again.
+
+The difference between a passing check log message and a failing check log message is
+the log level used. A passing check like this
+
+.. code-block:: vhdl
+
+    check(re = '1', "Checking that read enable is active");
+
+will result in a log entry like this
+
+.. code-block:: console
+
+    PASS: Checking that read enable is active
+
+Note that a message that reads well for both the pass and the fail cases was used. Note
+also that ``PASS`` isn't a standard log level but a custom log level defined by renaming
+one of the extra log levels, ``debug_low2``, provided by the logging library for the purpose
+of creating custom levels like this.
+
+A number of check subprograms perform several checks for every call, each of which can fail
+and generate an error message. However, there will only be one pass message for such a call
+to avoid confusion. For example, ``check_stable`` checks the stability of a signal for every
+clock cycle in a window. If the window is 100 clock cycles there will be 100 checks for
+stability but there will only be one pass message, not 100, if the signal is stable. Checks
+subprograms like these may also use special error messages (not the one provided in the call)
+for some of the internal checks. These messages does not affect the pass message which is
+always the message provided by the user.
+
 Check Location
 ~~~~~~~~~~~~~~
 
@@ -227,6 +269,14 @@ or you can use any of the following subprograms to get more details.
       n_failed : natural;
       n_passed : natural;
     end record;
+
+Note that a check subprogram with many internal checks may
+generate several error messages if the simulation isn't stopped by an error.
+Each such error will add one to ``n_checks`` and ``n_failed``. However, if
+the check pass ``n_checks`` and ``n_passed`` will only be increase by one.
+The reason for this is the same as for the single pass message approach, that
+is to avoid mismatch between the pass statistics and the number of passing
+check subprogram calls.
 
 Manage Checker Statistics
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -826,6 +876,9 @@ When ``allow_missing_start`` is ``true`` ``check_next`` will allow
 ``allow_missing_start`` is ``false`` such a situation will lead to a
 failure.
 
+Any unknown value  (``U``, ``X``, ``Z``, ``W``, or ``-``) on ``start_event``
+will cause an error.
+
 ``check_next`` will handle the weak values ``L`` and ``H`` in the same
 way as ``0`` and ``1``, respectively.
 
@@ -903,6 +956,10 @@ is activated and the check fails.
 
 .. figure:: images/check_sequence_penultimate_failing.png
    :alt:
+
+
+Any unknown values (``U``, ``X``, ``Z``, ``W``, or ``-``) in ``event_sequence``
+will lead to a an error. This is regardless of the mode of operation.
 
 Unconditional Checks
 ~~~~~~~~~~~~~~~~~~~~
