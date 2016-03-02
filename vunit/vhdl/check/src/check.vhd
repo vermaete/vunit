@@ -1374,6 +1374,7 @@ package body check_pkg is
       constant event_sequence : in    std_logic_vector) is
 
       variable seq                       : std_logic_vector(0 to event_sequence'length - 1) := event_sequence;
+      variable unknown_event_in_sequence : boolean                                          := false;
 
       function active_tracks (
         constant tracks : in boolean_vector)
@@ -1389,7 +1390,8 @@ package body check_pkg is
     begin
       for i in tracks'reverse_range loop
         if to_x01(seq(i)) = 'X' then
-          check_failed(checker, "Unknown event in sequence.", level, line_num, file_name);
+          -- FIXME: check moved out of loop to work with GHDL 0.33.
+          unknown_event_in_sequence := true;
         end if;
 
         if i = 0 then
@@ -1402,6 +1404,11 @@ package body check_pkg is
           tracks(i) := (tracks(i - 1) and (to_x01(seq(i)) = '1'));
         end if;
       end loop;
+
+      -- FIXME: check moved out of loop to work with GHDL 0.33.
+      if unknown_event_in_sequence then
+        check_failed(checker, "Unknown event in sequence.", level, line_num, file_name);
+      end if;
     end find_new_and_update_existing_tracks;
 
     procedure update_expectations_on_events_in_next_cycle (
