@@ -5,7 +5,9 @@
 -- Copyright (c) 2014-2016, Lars Asplund lars.anders.asplund@gmail.com
 
 library vunit_lib;
-context vunit_lib.vunit_context;
+use vunit_lib.run_types_pkg.all;
+use vunit_lib.run_base_pkg.all;
+use vunit_lib.run_pkg.all;
 
 entity tb_example is
   generic (runner_cfg : string);

@@ -5,7 +5,9 @@
 -- Copyright (c) 2014-2016, Lars Asplund lars.anders.asplund@gmail.com
 
 library vunit_lib;
-context vunit_lib.vunit_context;
+use vunit_lib.run_types_pkg.all;
+use vunit_lib.run_base_pkg.all;
+use vunit_lib.run_pkg.all;
 
 entity tb_example_many is
   generic (runner_cfg : string);
@@ -23,7 +25,7 @@ begin
         report "This will pass";
 
       elsif run("test_fail") then
-        assert false report "It fails";
+        assert false report "It fails" severity failure;
 
       end if;
     end loop;
