@@ -362,7 +362,7 @@ proc _vunit_run {} {
         set true_value 1
     } else {
         echo "No finish mechanism detected"
-        return 1;
+        return 1
     }
 
     when -fast "${exit_boolean} = ${true_value}" {
@@ -372,7 +372,8 @@ proc _vunit_run {} {
     }
 
     run -all
-    set failed [expr [examine -radix unsigned -internal ${status_boolean}]!=${true_value}]
+    set status_boolean_value [examine ${status_boolean}]
+    set failed [expr {$status_boolean_value} ne {$true_value}]
     if {$failed} {
         catch {
             # tb command can fail when error comes from pli
