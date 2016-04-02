@@ -18,7 +18,20 @@ use work.vunit_stop_pkg.vunit_stop;
 use work.vunit_core_pkg;
 use std.textio.all;
 
+library ieee;
+use ieee.std_logic_1164.all;
+
 package body run_pkg is
+  procedure notify (
+    signal runner : inout runner_sync_t) is
+  begin
+    if runner.event /= runner_event then
+      runner.event <= runner_event;
+      wait until runner.event = runner_event;
+      runner.event <= idle_runner;
+    end if;
+  end procedure notify;
+
   procedure test_runner_setup (
     signal runner : inout runner_sync_t;
     constant runner_cfg : in string := runner_cfg_default) is
@@ -69,7 +82,7 @@ package body run_pkg is
     end if;
 
     set_phase(test_runner_setup);
-    runner.phase <= test_runner_setup;
+    notify(runner);
     runner.exit_without_errors <= false;
     wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner setup phase.");
@@ -103,7 +116,7 @@ package body run_pkg is
     end if;
     exit_gate(runner);
     set_phase(test_suite_setup);
-    runner.phase <= test_suite_setup;
+    notify(runner);
     wait for 0 ns;
     debug(runner_trace_logger, "Entering test suite setup phase.");
     entry_gate(runner);
@@ -116,13 +129,13 @@ package body run_pkg is
     variable stat : checker_stat_t;
   begin
     set_phase(test_runner_cleanup);
-    runner.phase <= test_runner_cleanup;
+    notify(runner);
     wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner cleanup phase.");
     entry_gate(runner);
     exit_gate(runner);
     set_phase(test_runner_exit);
-    runner.phase <= test_runner_exit;
+    notify(runner);
     wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner exit phase.");
     get_checker_stat(stat);
@@ -411,9 +424,9 @@ package body run_pkg is
     constant line_num  : in natural := 0;
     constant file_name : in string := "") is
   begin
-    if runner.phase /= phase then
+    if get_phase /= phase then
       debug(runner_trace_logger, "Waiting for phase = " & replace(runner_phase_t'image(phase), "_", " ") & ".", me, line_num, file_name);
-      wait until runner.phase = phase;
+      wait on runner until get_phase = phase;
       debug(runner_trace_logger, "Waking up. Phase is " & replace(runner_phase_t'image(phase), "_", " ") & ".", me, line_num, file_name);
     end if;
   end;
@@ -425,7 +438,7 @@ package body run_pkg is
       debug(runner_trace_logger, "Halting on " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase entry gate.");
       wait on runner.locks until not runner.locks(get_phase).entry_is_locked for max_locked_time_c;
     end if;
-    runner.phase <= get_phase;
+    notify(runner);
     wait for 0 ns;
     debug(runner_trace_logger, "Passed " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase entry gate.");
   end procedure entry_gate;

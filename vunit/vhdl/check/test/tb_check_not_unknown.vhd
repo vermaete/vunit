@@ -47,7 +47,7 @@ architecture test_fixture of tb_check_not_unknown is
 begin
   clock: process is
   begin
-    while runner.phase < test_runner_exit loop
+    while get_phase < test_runner_exit loop
       clk <= '1', '0' after 5 ns;
       wait for 10 ns;
     end loop;

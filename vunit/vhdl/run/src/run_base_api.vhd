@@ -15,7 +15,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package run_base_pkg is
-  signal runner : runner_sync_t := (phase => test_runner_entry,
+  signal runner : runner_sync_t := (event => idle_runner,
                                     locks => ((false, false),
                                               (false, false),
                                               (false, false),

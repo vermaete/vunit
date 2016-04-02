@@ -23,6 +23,9 @@ use vunit_lib.run_pkg.all;
 use vunit_lib.vunit_core_pkg;
 use vunit_lib.vunit_stop_pkg;
 
+library ieee;
+use ieee.std_logic_1164.all;
+
 entity tb_run is
   generic (output_path : string);
 end entity tb_run;
@@ -38,13 +41,13 @@ begin
   begin
     wait until start_test_process;
     t_start := now;
-    if runner.phase /= test_suite_setup then
-      wait until runner.phase = test_suite_setup for 20 ns;
+    if get_phase /= test_suite_setup then
+      wait on runner until get_phase = test_suite_setup for 20 ns;
     end if;
     check(now - t_start = 17 ns, "Expected wait on test_suite_setup phase to be 17 ns.");
     t_start := now;
-    if runner.phase /= test_case_setup then
-      wait until runner.phase = test_case_setup for 20 ns;
+    if get_phase /= test_case_setup then
+      wait on runner until get_phase = test_case_setup for 20 ns;
     end if;
     check(now - t_start = 9 ns, "Expected wait on test_case_setup phase to be 9 ns.");
     test_process_completed <= true;
@@ -190,7 +193,11 @@ begin
     procedure test_case_setup is
     begin
       set_phase(test_runner_entry);
-      runner.phase <= test_runner_entry;
+      if runner.event /= runner_event then
+        runner.event <= runner_event;
+        wait until runner.event = runner_event;
+        runner.event <= idle_runner;
+      end if;
       runner.exit_without_errors <= false;
     end procedure test_case_setup;
 

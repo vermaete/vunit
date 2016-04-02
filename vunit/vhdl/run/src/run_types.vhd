@@ -16,17 +16,14 @@ package run_types_pkg is
   constant max_locked_time_c : time := 1 ms;
   constant max_n_test_cases_c : natural := 1024;
   constant unknown_num_of_test_cases_c : integer := integer'left;
+  constant runner_event : std_logic := '1';
+  constant idle_runner  : std_logic := 'Z';
 
   subtype runner_cfg_t is string; -- Subtype deprecated, use string instead
   constant runner_cfg_default : string := "enabled_test_cases : __all__, output path : , active python runner : false";
   subtype test_cases_t is string;
 
-  type runner_phase_unresolved_t is (test_runner_entry, test_runner_setup, test_suite_setup, test_case_setup, test_case, test_case_cleanup, test_suite_cleanup, test_runner_cleanup, test_runner_exit, multiple_drivers);
-  type runner_phase_unresolved_array_t is array (integer range <>) of runner_phase_unresolved_t;
-  function resolve_runner_phase (
-    constant values : runner_phase_unresolved_array_t)
-    return runner_phase_unresolved_t;
-  subtype runner_phase_t is resolve_runner_phase runner_phase_unresolved_t;
+  type runner_phase_t is (test_runner_entry, test_runner_setup, test_suite_setup, test_case_setup, test_case, test_case_cleanup, test_suite_cleanup, test_runner_cleanup, test_runner_exit, multiple_drivers);
 
   type phase_locks_unresolved_t is record
     entry_is_locked : boolean;
@@ -46,7 +43,7 @@ package run_types_pkg is
   subtype runner_flag_t is resolve_runner_flag boolean;
 
   type runner_sync_t is record
-    phase : runner_phase_t;
+    event : std_logic;
     locks : phase_locks_array_t(test_runner_setup to test_runner_cleanup);
     exit_without_errors : runner_flag_t;
     exit_simulation : runner_flag_t;
@@ -76,28 +73,6 @@ package run_types_pkg is
 end package;
 
 package body run_types_pkg is
-  function resolve_runner_phase (
-    constant values : runner_phase_unresolved_array_t)
-    return runner_phase_unresolved_t is
-    variable n_set_values : natural := 0;
-    variable result : runner_phase_unresolved_t := test_runner_entry;
-  begin
-    for i in values'range loop
-      if values(i) = test_runner_exit then
-        return test_runner_exit;
-      elsif values(i) /= test_runner_entry then
-        result := values(i);
-        n_set_values := n_set_values + 1;
-      end if;
-    end loop;
-
-    if n_set_values > 1 then
-      result := multiple_drivers;
-    end if;
-
-    return result;
-  end;
-
   function resolve_phase_locks (
     constant values : phase_locks_unresolved_array_t)
     return phase_locks_unresolved_t is
