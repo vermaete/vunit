@@ -15,6 +15,26 @@ package run_special_types_pkg is
 
      impure function has_active_python_runner return boolean;
 
+     procedure lock_entry (
+       constant phase : in runner_phase_t);
+
+     procedure unlock_entry (
+       constant phase : in runner_phase_t);
+
+     impure function entry_is_locked (
+       constant phase : in runner_phase_t)
+       return boolean;
+
+     procedure lock_exit (
+       constant phase : in runner_phase_t);
+
+     procedure unlock_exit (
+       constant phase : in runner_phase_t);
+
+     impure function exit_is_locked (
+       constant phase : in runner_phase_t)
+       return boolean;
+
      procedure set_phase (
        constant new_phase  : in runner_phase_t);
 
@@ -122,6 +142,7 @@ package body run_special_types_pkg is
     variable state : runner_state_t := (
       active_python_runner => false,
       runner_phase => runner_phase_t'left,
+      locks => (others => (0, 0)),
       test_case_names => (others => null),
       n_test_cases => unknown_num_of_test_cases_c,
       active_test_case_index => 1,
@@ -176,6 +197,48 @@ package body run_special_types_pkg is
      begin
        return state.active_python_runner;
      end function;
+
+     procedure lock_entry (
+       constant phase : in runner_phase_t) is
+     begin
+       state.locks(phase).n_entry_locks := state.locks(phase).n_entry_locks + 1;
+     end;
+
+     procedure unlock_entry (
+       constant phase : in runner_phase_t) is
+     begin
+       if entry_is_locked(phase) then
+         state.locks(phase).n_entry_locks := state.locks(phase).n_entry_locks - 1;
+       end if;
+     end;
+
+     impure function entry_is_locked (
+       constant phase : in runner_phase_t)
+       return boolean is
+     begin
+       return state.locks(phase).n_entry_locks > 0;
+     end;
+
+     procedure lock_exit (
+       constant phase : in runner_phase_t) is
+     begin
+       state.locks(phase).n_exit_locks := state.locks(phase).n_exit_locks + 1;
+     end;
+
+     procedure unlock_exit (
+       constant phase : in runner_phase_t) is
+     begin
+       if exit_is_locked(phase) then
+         state.locks(phase).n_exit_locks := state.locks(phase).n_exit_locks - 1;
+       end if;
+     end;
+
+     impure function exit_is_locked (
+       constant phase : in runner_phase_t)
+       return boolean is
+     begin
+       return state.locks(phase).n_exit_locks > 0;
+     end;
 
      procedure set_phase (
        constant new_phase  : in runner_phase_t) is

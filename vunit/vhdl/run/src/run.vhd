@@ -142,7 +142,6 @@ package body run_pkg is
     runner.exit_without_errors <= (stat.n_failed = 0) and not external_failure;
 
     runner_init(has_active_python_runner); -- @TODO Why?
-    runner.locks(test_runner_setup to test_runner_cleanup) <= (others => (false, false));
 
     wait for 0 ns;
 
@@ -370,51 +369,51 @@ package body run_pkg is
   end function test_exit;
 
   procedure lock_entry (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "") is
   begin
-    runner.locks(phase).entry_is_locked <= true;
-    wait for 0 ns;
+    lock_entry(phase);
     debug(runner_trace_logger, "Locked " & replace(runner_phase_t'image(phase), "_", " ") & " phase entry gate.", me, line_num, file_name);
+    notify(runner);
   end;
 
   procedure unlock_entry (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "") is
   begin
-    runner.locks(phase).entry_is_locked <= false;
+    unlock_entry(phase);
     debug(runner_trace_logger, "Unlocked " & replace(runner_phase_t'image(phase), "_", " ") & " phase entry gate.", me, line_num, file_name);
-    wait for 0 ns;
+    notify(runner);
   end;
 
   procedure lock_exit (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "") is
   begin
-    runner.locks(phase).exit_is_locked <= true;
-    wait for 0 ns;
+    lock_exit(phase);
     debug(runner_trace_logger, "Locked " & replace(runner_phase_t'image(phase), "_", " ") & " phase exit gate.", me, line_num, file_name);
+    notify(runner);
   end;
 
   procedure unlock_exit (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "") is
   begin
-    runner.locks(phase).exit_is_locked <= false;
+    unlock_exit(phase);
     debug(runner_trace_logger, "Unlocked " & replace(runner_phase_t'image(phase), "_", " ") & " phase exit gate.", me, line_num, file_name);
-    wait for 0 ns;
+    notify(runner);
   end;
 
   procedure wait_until (
@@ -434,21 +433,20 @@ package body run_pkg is
   procedure entry_gate (
     signal runner : inout runner_sync_t) is
   begin
-    if runner.locks(get_phase).entry_is_locked then
+    if entry_is_locked(get_phase) then
       debug(runner_trace_logger, "Halting on " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase entry gate.");
-      wait on runner.locks until not runner.locks(get_phase).entry_is_locked for max_locked_time_c;
+      wait on runner until not entry_is_locked(get_phase) for max_locked_time_c;
     end if;
     notify(runner);
-    wait for 0 ns;
     debug(runner_trace_logger, "Passed " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase entry gate.");
   end procedure entry_gate;
 
   procedure exit_gate (
     signal runner : in runner_sync_t) is
   begin
-    if runner.locks(get_phase).exit_is_locked then
+    if exit_is_locked(get_phase) then
       debug(runner_trace_logger, "Halting on " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase exit gate.");
-      wait on runner.locks until not runner.locks(get_phase).exit_is_locked for max_locked_time_c;
+      wait on runner until not exit_is_locked(get_phase) for max_locked_time_c;
     end if;
     debug(runner_trace_logger, "Passed " & replace(runner_phase_t'image(get_phase), "_", " ") & " phase exit gate.");
   end procedure exit_gate;

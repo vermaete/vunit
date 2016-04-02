@@ -16,13 +16,6 @@ use ieee.std_logic_1164.all;
 
 package run_base_pkg is
   signal runner : runner_sync_t := (event => idle_runner,
-                                    locks => ((false, false),
-                                              (false, false),
-                                              (false, false),
-                                              (false, false),
-                                              (false, false),
-                                              (false, false),
-                                              (false, false)),
                                     exit_without_errors => false,
                                     exit_simulation => false);
 
@@ -31,6 +24,26 @@ package run_base_pkg is
   procedure runner_init(active_python_runner : boolean);
 
   impure function has_active_python_runner return boolean;
+
+  procedure lock_entry (
+    constant phase : in runner_phase_t);
+
+  procedure unlock_entry (
+    constant phase : in runner_phase_t);
+
+  impure function entry_is_locked (
+    constant phase : in runner_phase_t)
+    return boolean;
+
+  procedure lock_exit (
+    constant phase : in runner_phase_t);
+
+  procedure unlock_exit (
+    constant phase : in runner_phase_t);
+
+  impure function exit_is_locked (
+    constant phase : in runner_phase_t)
+    return boolean;
 
   procedure set_phase (
       constant new_phase  : in runner_phase_t);

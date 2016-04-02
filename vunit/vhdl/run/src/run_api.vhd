@@ -77,28 +77,28 @@ package run_pkg is
     constant disable_simulation_exit : in    boolean := false);
 
   procedure lock_entry (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "");
 
   procedure unlock_entry (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "");
 
   procedure lock_exit (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;
     constant file_name : in string := "");
 
   procedure unlock_exit (
-    signal runner : out runner_sync_t;
+    signal runner : inout runner_sync_t;
     constant phase : in runner_phase_t;
     constant me : in string := "";
     constant line_num  : in natural := 0;

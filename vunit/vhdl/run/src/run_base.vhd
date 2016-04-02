@@ -19,6 +19,44 @@ package body run_base_pkg is
     return default_runner.has_active_python_runner;
   end function;
 
+  procedure lock_entry (
+    constant phase : in runner_phase_t) is
+  begin
+    default_runner.lock_entry(phase);
+  end;
+
+  procedure unlock_entry (
+    constant phase : in runner_phase_t) is
+  begin
+    default_runner.unlock_entry(phase);
+  end;
+
+  impure function entry_is_locked (
+    constant phase : in runner_phase_t)
+    return boolean is
+  begin
+    return default_runner.entry_is_locked(phase);
+  end;
+
+  procedure lock_exit (
+    constant phase : in runner_phase_t) is
+  begin
+    default_runner.lock_exit(phase);
+  end;
+
+  procedure unlock_exit (
+    constant phase : in runner_phase_t) is
+  begin
+    default_runner.unlock_exit(phase);
+  end;
+
+  impure function exit_is_locked (
+    constant phase : in runner_phase_t)
+    return boolean is
+  begin
+    return default_runner.exit_is_locked(phase);
+  end;
+
   procedure set_phase (
     constant new_phase  : in runner_phase_t) is
   begin

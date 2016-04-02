@@ -744,7 +744,7 @@ begin
     wait until test_runner_watchdog_completed for 11 ns;
     check(c, test_runner_watchdog_completed and (now - t_start = 10 ns), "Test runner watchdog failed to time-out");
     get_checker_stat(checker_stat);
-    check(c, checker_stat.n_failed = 1, "Expected 1 error on default checker");
+    check(c, checker_stat.n_failed = 1, "Expected 1 error on default checker. Got " & integer'image(checker_stat.n_failed));
     reset_checker_stat;
 
     ---------------------------------------------------------------------------
