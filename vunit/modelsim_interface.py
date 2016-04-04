@@ -301,7 +301,7 @@ proc vunit_load {{{{vsim_extra_args ""}}}} {{
        return 1
     }}
     set no_finished_signal [catch {{examine -internal {{/vunit_finished}}}}]
-    set no_vhdl_test_runner_exit [catch {{examine -internal {{/run_base_pkg/runner.exit_simulation}}}}]
+    set no_vhdl_test_runner_exit [catch {{examine -internal {{/run_base_pkg/runner}}}}]
     set no_verilog_test_runner_exit [catch {{examine -internal {{/vunit_pkg/__runner__}}}}]
 
     if {{${{no_finished_signal}} && ${{no_vhdl_test_runner_exit}} && ${{no_verilog_test_runner_exit}}}}  {{
@@ -345,30 +345,40 @@ proc _vunit_run {} {
     onbreak {on_break}
 
     set has_vunit_finished_signal [expr ![catch {examine -internal {/vunit_finished}}]]
-    set has_vhdl_runner [expr ![catch {examine -internal {/run_base_pkg/runner.exit_simulation}}]]
+    set has_vhdl_runner [expr ![catch {examine -internal {/run_base_pkg/runner}}]]
     set has_verilog_runner [expr ![catch {examine -internal {/vunit_pkg/__runner__}}]]
 
     if {${has_vunit_finished_signal}} {
         set exit_boolean {/vunit_finished}
         set status_boolean {/vunit_finished}
         set true_value TRUE
+        when -fast "${exit_boolean} = ${true_value}" {
+            echo "Finished"
+            stop
+            resume
+        }
     } elseif {${has_vhdl_runner}} {
-        set exit_boolean {/run_base_pkg/runner.exit_simulation}
-        set status_boolean {/run_base_pkg/runner.exit_without_errors}
+        set status_boolean {/run_base_pkg/default_runner.state.exit_without_errors}
         set true_value TRUE
+        when "/run_base_pkg/runner'event" {
+            if {[expr [examine /run_base_pkg/default_runner.state.exit_simulation]==TRUE]} {
+                echo "Finished"
+                stop
+                resume
+            }
+        }
     } elseif {${has_verilog_runner}} {
         set exit_boolean {/vunit_pkg/__runner__.exit_simulation}
         set status_boolean {/vunit_pkg/__runner__.exit_without_errors}
         set true_value 1
+        when -fast "${exit_boolean} = ${true_value}" {
+            echo "Finished"
+            stop
+            resume
+        }
     } else {
         echo "No finish mechanism detected"
         return 1;
-    }
-
-    when -fast "${exit_boolean} = ${true_value}" {
-        echo "Finished"
-        stop
-        resume
     }
 
     run -all

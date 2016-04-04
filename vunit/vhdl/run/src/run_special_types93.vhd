@@ -10,8 +10,7 @@ use std.textio.all;
 use work.run_types_pkg.all;
 
 package run_special_types_pkg is
-  subtype runner_t is runner_state_t;
+  type runner_t is record
+    state : runner_state_t;
+  end record runner_t;
 end package;
-
-package body run_special_types_pkg is
-end package body run_special_types_pkg;

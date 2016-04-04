@@ -19,6 +19,23 @@ package body run_base_pkg is
     return default_runner.has_active_python_runner;
   end function;
 
+  procedure exit_simulation is
+  begin
+    default_runner.exit_simulation;
+  end;
+
+  procedure set_exit_error_status (
+    constant exit_without_errors : in boolean) is
+  begin
+    default_runner.set_exit_error_status(exit_without_errors);
+  end;
+
+  impure function exit_without_errors
+    return boolean is
+  begin
+    return default_runner.exit_without_errors;
+  end;
+
   procedure lock_entry (
     constant phase : in runner_phase_t) is
   begin

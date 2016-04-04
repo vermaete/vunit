@@ -132,7 +132,12 @@ begin
     wait until start_test_runner_watchdog;
     test_runner_watchdog(runner, 10 ns, true);
     test_runner_watchdog_completed <= true;
-    runner.exit_without_errors <= false;
+    set_exit_error_status(exit_without_errors <= false);
+    if runner /= runner_event then
+      runner <= runner_event;
+      wait for 0 ns;
+      runner <= idle_runner;
+    end if;
   end process watchdog;
 
   test_runner : process
@@ -193,12 +198,12 @@ begin
     procedure test_case_setup is
     begin
       set_phase(test_runner_entry);
-      if runner.event /= runner_event then
-        runner.event <= runner_event;
-        wait until runner.event = runner_event;
-        runner.event <= idle_runner;
+      set_exit_error_status(exit_without_errors <= false);
+      if runner /= runner_event then
+        runner <= runner_event;
+        wait for 0 ns;
+        runner <= idle_runner;
       end if;
-      runner.exit_without_errors <= false;
     end procedure test_case_setup;
 
     variable checker_stat, test_checker_stat : checker_stat_t;
@@ -333,7 +338,6 @@ begin
       exit;
     end loop;
 
-
     ---------------------------------------------------------------------------
     banner("Should loop a set of test cases without repetition when all test cases are enabled.");
     test_case_setup;
@@ -360,8 +364,6 @@ begin
     test_runner_setup(runner);
     check(c, run("Should a"), "Expected ""Should a"" to run.");
 
-
-
     ---------------------------------------------------------------------------
     banner("Should maintain correct phase when using the full run mode of operation without any early exits");
     test_case_setup;
@@ -386,8 +388,6 @@ begin
     check(c, get_phase = test_suite_cleanup, "Phase should be test suite cleanup" & " Got " & runner_phase_t'image(get_phase) & ".");
     test_runner_cleanup(runner, disable_simulation_exit => true);
     check(c, get_phase = test_runner_exit, "Phase should be test runner exit" & " Got " & runner_phase_t'image(get_phase) & ".");
-
-
 
     ---------------------------------------------------------------------------
     banner("Should maintain correct phase when using the full run mode of operation and there is a premature exit of a test case.");
@@ -416,8 +416,6 @@ begin
     check(c, get_phase = test_suite_cleanup, "Phase should be test suite cleanup" & " Got " & runner_phase_t'image(get_phase) & ".");
     test_runner_cleanup(runner, disable_simulation_exit => true);
     check(c, get_phase = test_runner_exit, "Phase should be test runner exit" & " Got " & runner_phase_t'image(get_phase) & ".");
-
-
 
     ---------------------------------------------------------------------------
     banner("Should maintain correct phase when using the full run mode of operation and there is a premature exit of a test suite.");
@@ -464,7 +462,6 @@ begin
     banner("Should be possible to exit a test suite from the test case/suite from the test case cleanup code.");
     test_case_setup;
 
-
     ---------------------------------------------------------------------------
     banner("Should be possible to stall execution and stall the exit of a phase");
     test_case_setup;
@@ -482,8 +479,6 @@ begin
     end loop;
     test_runner_cleanup(runner, disable_simulation_exit => true);
 
-
-
     ---------------------------------------------------------------------------
     banner("Should be possible to suspend a process/procedure waiting for a specific phase");
     test_case_setup;
@@ -500,8 +495,6 @@ begin
     if not test_process_completed then
       wait until test_process_completed;
     end if;
-
-
 
     ---------------------------------------------------------------------------
     banner("Should be possible to read current test case name");
@@ -751,9 +744,9 @@ begin
     banner("Should be possible to externally figure out if the test runner terminated without errors.");
     test_case_setup;
     test_runner_setup(runner, "enabled_test_cases : test a,, test b,, test c,, test d");
-    check_false(c, runner.exit_without_errors, "Expected exit flag to be false after runner setup");
+    check_false(c, exit_without_errors, "Expected exit flag to be false after runner setup");
     test_runner_cleanup(runner, disable_simulation_exit => true);
-    check(c, runner.exit_without_errors, "Expected exit flag to be true after runner cleanup");
+    check(c, exit_without_errors, "Expected exit flag to be true after runner cleanup");
 
     ---------------------------------------------------------------------------
     banner("Should be possible to externally figure out if the test runner terminated with or errors.");
@@ -763,7 +756,7 @@ begin
     check(test_checker, false, "Should fail");
     get_checker_stat(test_checker, test_checker_stat);
     test_runner_cleanup(runner, test_checker_stat, disable_simulation_exit => true);
-    check_false(c, runner.exit_without_errors, "Expected exit flag to be false after runner cleanup");
+    check_false(c, exit_without_errors, "Expected exit flag to be false after runner cleanup");
 
     ---------------------------------------------------------------------------
     banner("Should be possible to read running test case when running all");

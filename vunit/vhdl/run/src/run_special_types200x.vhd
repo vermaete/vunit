@@ -15,6 +15,14 @@ package run_special_types_pkg is
 
      impure function has_active_python_runner return boolean;
 
+     procedure exit_simulation;
+
+     procedure set_exit_error_status (
+       constant exit_without_errors : in boolean);
+
+     impure function exit_without_errors
+       return boolean;
+
      procedure lock_entry (
        constant phase : in runner_phase_t);
 
@@ -156,7 +164,9 @@ package body run_special_types_pkg is
       test_case_iteration => 0,
       test_case_exit_after_error => false,
       test_suite_exit_after_error => false,
-      runner_cfg => null);
+      runner_cfg => null,
+      exit_simulation => false,
+      exit_without_errors => false);
 
      procedure init(active_python_runner : boolean) is
      begin
@@ -197,6 +207,23 @@ package body run_special_types_pkg is
      begin
        return state.active_python_runner;
      end function;
+
+     procedure exit_simulation is
+     begin
+       state.exit_simulation := true;
+     end procedure exit_simulation;
+
+     procedure set_exit_error_status (
+       constant exit_without_errors : in boolean) is
+     begin
+       state.exit_without_errors := exit_without_errors;
+     end;
+
+     impure function exit_without_errors
+       return boolean is
+     begin
+       return state.exit_without_errors;
+     end;
 
      procedure lock_entry (
        constant phase : in runner_phase_t) is

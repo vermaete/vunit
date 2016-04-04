@@ -15,15 +15,21 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package run_base_pkg is
-  signal runner : runner_sync_t := (event => idle_runner,
-                                    exit_without_errors => false,
-                                    exit_simulation => false);
+  signal runner : runner_sync_t := idle_runner;
 
   shared variable runner_trace_logger : logger_t;
 
   procedure runner_init(active_python_runner : boolean);
 
   impure function has_active_python_runner return boolean;
+
+  procedure exit_simulation;
+
+  procedure set_exit_error_status (
+    constant exit_without_errors : in boolean);
+
+  impure function exit_without_errors
+    return boolean;
 
   procedure lock_entry (
     constant phase : in runner_phase_t);

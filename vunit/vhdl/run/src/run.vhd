@@ -25,10 +25,10 @@ package body run_pkg is
   procedure notify (
     signal runner : inout runner_sync_t) is
   begin
-    if runner.event /= runner_event then
-      runner.event <= runner_event;
-      wait until runner.event = runner_event;
-      runner.event <= idle_runner;
+    if runner /= runner_event then
+      runner <= runner_event;
+      wait for 0 ns;
+      runner <= idle_runner;
     end if;
   end procedure notify;
 
@@ -82,9 +82,8 @@ package body run_pkg is
     end if;
 
     set_phase(test_runner_setup);
+    set_exit_error_status(exit_without_errors => false);
     notify(runner);
-    runner.exit_without_errors <= false;
-    wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner setup phase.");
     entry_gate(runner);
 
@@ -130,30 +129,30 @@ package body run_pkg is
   begin
     set_phase(test_runner_cleanup);
     notify(runner);
-    wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner cleanup phase.");
     entry_gate(runner);
     exit_gate(runner);
     set_phase(test_runner_exit);
     notify(runner);
-    wait for 0 ns;
     debug(runner_trace_logger, "Entering test runner exit phase.");
     get_checker_stat(stat);
-    runner.exit_without_errors <= (stat.n_failed = 0) and not external_failure;
+    set_exit_error_status(exit_without_errors => (stat.n_failed = 0) and not external_failure);
+    notify(runner);
 
     runner_init(has_active_python_runner); -- @TODO Why?
 
     wait for 0 ns;
 
-    if runner.exit_without_errors then
+    if exit_without_errors then
       if has_active_python_runner then
         vunit_core_pkg.test_suite_done;
       end if;
     end if;
 
     if not disable_simulation_exit then
-      runner.exit_simulation <= true;
-      if runner.exit_without_errors then
+      exit_simulation;
+      notify(runner);
+      if exit_without_errors then
         vunit_stop(0);
       else
         vunit_stop(1);
@@ -316,9 +315,9 @@ package body run_pkg is
     constant timeout                 : in    time;
     constant disable_simulation_exit : in    boolean := false) is
   begin
-    wait until runner.exit_without_errors for timeout;
-    check(runner.exit_without_errors, "Test runner timeout after " & time'image(timeout) & ".");
-    if not runner.exit_without_errors then
+    wait on runner until exit_without_errors for timeout;
+    check(exit_without_errors, "Test runner timeout after " & time'image(timeout) & ".");
+    if not exit_without_errors then
       test_runner_cleanup(runner, disable_simulation_exit => disable_simulation_exit);
     end if;
   end;
