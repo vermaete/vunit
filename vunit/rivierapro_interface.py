@@ -195,7 +195,7 @@ proc vunit_load {{}} {{
         return 1
     }}
 
-    set no_vhdl_test_runner_exit [catch {{examine /vunit_lib.run_base_pkg/runner.exit_simulation}}]
+    set no_vhdl_test_runner_exit [catch {{examine /vunit_lib.run_base_pkg/runner}}]
     set no_verilog_test_runner_exit [catch {{examine /\\\\package vunit_lib.vunit_pkg\\\\/__runner__}}]
     if {{${{no_vhdl_test_runner_exit}} && ${{no_verilog_test_runner_exit}}}}  {{
         echo {{Error: No vunit test runner package used}}
@@ -241,7 +241,7 @@ proc vunit_run {} {
     set has_verilog_runner [expr ![catch {examine /\\\\package vunit_lib.vunit_pkg\\\\/__runner__}]]
 
     if {${has_vhdl_runner}} {
-        set status_boolean "/vunit_lib.run_base_pkg/runner.exit_without_errors"
+        set status_boolean "/vunit_lib.run_base_pkg/default_runner/state/exit_without_errors"
         set true_value true
     } elseif {${has_verilog_runner}} {
         set status_boolean "/\\\\package vunit_lib.vunit_pkg\\\\/__runner__.exit_without_errors"

@@ -348,23 +348,25 @@ proc _vunit_run {} {
     set has_vhdl_runner [expr ![catch {examine -internal {/run_base_pkg/runner}}]]
     set has_verilog_runner [expr ![catch {examine -internal {/vunit_pkg/__runner__}}]]
 
+    proc on_exit {} {
+        echo "Finished"
+        stop
+        resume
+    }
+
     if {${has_vunit_finished_signal}} {
         set exit_boolean {/vunit_finished}
         set status_boolean {/vunit_finished}
         set true_value TRUE
         when -fast "${exit_boolean} = ${true_value}" {
-            echo "Finished"
-            stop
-            resume
+            on_exit
         }
     } elseif {${has_vhdl_runner}} {
         set status_boolean {/run_base_pkg/default_runner.state.exit_without_errors}
         set true_value TRUE
         when "/run_base_pkg/runner'event" {
             if {[expr [examine /run_base_pkg/default_runner.state.exit_simulation]==TRUE]} {
-                echo "Finished"
-                stop
-                resume
+                on_exit
             }
         }
     } elseif {${has_verilog_runner}} {
@@ -372,9 +374,7 @@ proc _vunit_run {} {
         set status_boolean {/vunit_pkg/__runner__.exit_without_errors}
         set true_value 1
         when -fast "${exit_boolean} = ${true_value}" {
-            echo "Finished"
-            stop
-            resume
+            on_exit
         }
     } else {
         echo "No finish mechanism detected"
