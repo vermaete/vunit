@@ -27,8 +27,9 @@ package body run_pkg is
   begin
     if runner /= runner_event then
       runner <= runner_event;
-      wait for 0 ns;
+      wait until runner = runner_event;
       runner <= idle_runner;
+      wait until runner = idle_runner;
     end if;
   end procedure notify;
 
